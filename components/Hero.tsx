@@ -9,8 +9,8 @@ import { fadeUp, fadeIn, staggerContainer, staggerItem, viewport } from '@/lib/a
 const socialLinks = [
     { icon: FaGithub, href: 'https://github.com/Mushfiq599', label: 'GitHub' },
     { icon: FaLinkedin, href: 'https://linkedin.com/in/mushfiq', label: 'LinkedIn' },
-    { icon: FaTwitter, href: 'https://twitter.com/mushfiq', label: 'Twitter' },
-    { icon: FaWhatsapp, href: 'https://wa.me/8801XXXXXXXXX', label: 'WhatsApp' },
+    { icon: FaTwitter, href: 'https://X.com/mushfiq', label: 'Twitter' },
+    { icon: FaWhatsapp, href: 'https://wa.me/8801630935413', label: 'WhatsApp' },
 ];
 
 const stats = [
@@ -356,7 +356,7 @@ export default function Hero() {
                             background: 'var(--bg-secondary)',
                         }}>
                             <img
-                                src="/images/hero-photo.jpeg"
+                                src="../portfolio-hero.png"
                                 alt="Mushfiq — Full Stack Developer"
                                 style={{
                                     width: '100%',
