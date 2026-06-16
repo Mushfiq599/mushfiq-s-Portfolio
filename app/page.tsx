@@ -1,14 +1,18 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import About from '@/components/About';
+import Skills from '@/components/Skills';
 
 export default function Home() {
   return (
     <main>
       <Navbar />
       <Hero />
+      <About />
+      <Skills />
 
-      {/* Placeholder sections so nav scroll targets exist */}
-      {['about', 'skills', 'education', 'experience', 'projects', 'contact'].map((id) => (
+      {/* Placeholder sections */}
+      {['education', 'experience', 'projects', 'contact'].map((id) => (
         <section
           key={id}
           id={id}
