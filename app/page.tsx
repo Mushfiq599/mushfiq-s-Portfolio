@@ -4,6 +4,7 @@ import About from '@/components/About';
 import Skills from '@/components/Skills';
 import Education from '@/components/Education';
 import Experience from '@/components/Experience';
+import Projects from '@/components/Projects';
 
 export default function Home() {
   return (
@@ -14,25 +15,23 @@ export default function Home() {
       <Skills />
       <Education />
       <Experience />
+      <Projects />
 
-      {/* Placeholder sections */}
-      {['projects', 'contact'].map((id) => (
-        <section
-          key={id}
-          id={id}
-          style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--text-muted)',
-            fontSize: '1.5rem',
-            borderTop: '1px solid var(--border)',
-          }}
-        >
-          {id} — coming soon
-        </section>
-      ))}
+      {/* Placeholder */}
+      <section
+        id="contact"
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--text-muted)',
+          fontSize: '1.5rem',
+          borderTop: '1px solid var(--border)',
+        }}
+      >
+        contact — coming soon
+      </section>
     </main>
   );
 }
