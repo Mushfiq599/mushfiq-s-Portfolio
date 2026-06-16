@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ─────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #111118;
+  --bg-card: #16161f;
+  --accent-purple: #7C3AED;
+  --accent-purple-light: #9F6EFF;
+  --accent-cyan: #06B6D4;
+  --accent-magenta: #EC4899;
+  --text-primary: #F8FAFC;
+  --text-muted: #94A3B8;
+  --border: rgba(255, 255, 255, 0.06);
+  --glass: rgba(255, 255, 255, 0.04);
+  --glow-purple: rgba(124, 58, 237, 0.35);
+  --glow-cyan: rgba(6, 182, 212, 0.25);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Base ───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto; /* Lenis handles this */
+  cursor: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide default cursor everywhere when custom cursor is active */
+*, a, button {
+  cursor: none !important;
+}
+
+/* ─── Custom Cursor ──────────────────────────────── */
+.custom-cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--accent-purple);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s, width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
+}
+
+.custom-cursor-ring.visible { opacity: 1; }
+
+.custom-cursor-ring.expanded {
+  width: 56px;
+  height: 56px;
+  border-color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.06);
+}
+
+.custom-cursor-dot {
+  position: fixed;
+  width: 5px;
+  height: 5px;
+  background: var(--accent-purple-light);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.custom-cursor-dot.visible { opacity: 1; }
+
+/* ─── Section Shared ─────────────────────────────── */
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-purple-light);
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.section-subheading {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+  max-width: 520px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-purple-light), var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glass Card ─────────────────────────────────── */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+}
+
+/* ─── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: var(--accent-purple);
+  border-radius: 4px;
+}
+
+/* ─── Selection ──────────────────────────────────── */
+::selection {
+  background: rgba(124, 58, 237, 0.35);
+  color: var(--text-primary);
 }
