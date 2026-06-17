@@ -32,9 +32,9 @@ const highlights = [
 
 const facts = [
     { label: 'Based in', value: 'Chattogram, Bangladesh' },
-    { label: 'Education', value: 'BSc in CSE (ongoing)' },
+    { label: 'Education', value: 'BSc in CSE (Graduated)' },
     { label: 'Focus', value: 'Full Stack Web Development' },
-    { label: 'Hobbies', value: 'Coding, Gaming, Chess' },
+    { label: 'Hobbies', value: 'Coding, Football, Chess' },
     { label: 'Languages', value: 'Bengali, English' },
     { label: 'Status', value: '🟢 Open to work' },
 ];
@@ -123,7 +123,7 @@ export default function About() {
                                 a deep dive into JavaScript, then React, and eventually the full MERN stack.
                             </p>
                             <p>
-                                I'm currently a CSE student at UITS, Bangladesh, where I balance academic
+                                I just graduated as a CSE student from BGC Trust University, Bangladesh, where I balanced academic
                                 learning with hands-on project building. Most of what I know came from
                                 building real things, breaking them, and figuring out why.
                             </p>

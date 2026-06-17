@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaTwitter, FaHeart } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa';
 import { fadeUp, viewport } from '@/lib/animations';
+import { FaX } from 'react-icons/fa6';
 
 const navLinks = [
     { label: 'About', href: 'about' },
@@ -15,8 +16,8 @@ const navLinks = [
 
 const socialLinks = [
     { icon: FaGithub, href: 'https://github.com/Mushfiq599', label: 'GitHub' },
-    { icon: FaLinkedin, href: 'https://linkedin.com/in/mushfiq', label: 'LinkedIn' },
-    { icon: FaTwitter, href: 'https://twitter.com/mushfiq', label: 'Twitter' },
+    { icon: FaLinkedin, href: 'https://www.linkedin.com/in/mush-fiq', label: 'LinkedIn' },
+    { icon: FaX, href: 'https://x.com/MushFiq72288867', label: 'X' },
 ];
 
 export default function Footer() {

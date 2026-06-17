@@ -17,7 +17,7 @@ const projects: Project[] = [
         detailedDescription: 'Care.xyz is a full-stack care services booking platform built with Next.js 14 and the App Router. It features Google OAuth via NextAuth, a multi-step booking flow with location dropdowns, Stripe payment integration, Nodemailer invoice emails, and an admin dashboard for managing bookings and users.',
         technologies: ['Next.js 14', 'NextAuth', 'MongoDB', 'Stripe', 'Nodemailer', 'Tailwind CSS'],
         github: 'https://github.com/Mushfiq599/care-xyz',
-        live: 'https://github.com/Mushfiq599/care-xyz',
+        live: 'https://care-xyz-rouge.vercel.app',
         image: 'https://i.ibb.co.com/zHB78qS7/Screenshot-354.png',
         challenges: [
             'Implementing async params correctly in Next.js 14 dynamic routes',
@@ -35,8 +35,8 @@ const projects: Project[] = [
         description: 'A premium decoration services booking platform with role-based dashboards, ImageBB uploads, and JWT authentication.',
         detailedDescription: 'StyleDecor is an industry-ready decoration services platform built with React, Vite, Node.js, Express, and MongoDB. It features a role-aware dashboard with analytics and admin user management, ImageBB image upload integration, and a full reusable component library with React.lazy code splitting.',
         technologies: ['React', 'Vite', 'Node.js', 'Express', 'MongoDB', 'JWT', 'ImageBB', 'Tailwind CSS'],
-        github: 'https://github.com/Mushfiq599/stleDecor-client',
-        live: 'https://github.com/Mushfiq599/stleDecor-client',
+        github: 'https://github.com/Mushfiq599/styleDecor-client',
+        live: 'https://style-decor-client-five.vercel.app',
         image: 'https://i.ibb.co.com/CpvMLn9T/Screenshot-356.png',
         challenges: [
             'Auth race condition where setLoading(false) fired before JWT token was saved',
@@ -74,8 +74,8 @@ const projects: Project[] = [
         detailedDescription: 'GadgetHub is a tech gadget showcase platform built with Next.js 15, Tailwind CSS v4, and Firebase Authentication. It allows users to browse gadgets by category, save items to a wishlist, and manage a cart — all persisted in localStorage.',
         technologies: ['Next.js 15', 'Tailwind CSS v4', 'Firebase Auth', 'localStorage', 'JavaScript'],
         github: 'https://github.com/Mushfiq599/gadgethub',
-        live: 'https://github.com/Mushfiq599/gadgethub',
-        image: 'https://i.ibb.co.com/zHB78qS7/Screenshot-354.png',
+        live: 'https://gadget-hub-delta.vercel.app',
+        image: 'https://i.ibb.co.com/Qv2ZSnMP/Screenshot-425.png',
         challenges: [
             'Missing lucide-react export errors in Next.js 15 build pipeline',
             'Async params handling in Next.js 15 dynamic routes',

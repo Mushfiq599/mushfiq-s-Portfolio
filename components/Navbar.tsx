@@ -61,7 +61,6 @@ export default function Navbar() {
                 right: 0,
                 zIndex: 100,
                 padding: scrolled ? '12px 0' : '20px 0',
-                
                 background: scrolled
                     ? 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(124,58,237,0.04) 50%, rgba(6,182,212,0.03) 100%)'
                     : 'transparent',

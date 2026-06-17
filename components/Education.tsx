@@ -7,31 +7,31 @@ import { fadeUp, fadeLeft, staggerContainer, staggerItem, viewport } from '@/lib
 const educationData = [
     {
         degree: 'Bachelor of Science in Computer Science & Engineering',
-        institution: 'University of Information Technology & Sciences (UITS)',
-        period: '2023 — Present',
+        institution: 'BGC Trust University Bangladesh, Chattogram',
+        period: '2020 — 2025',
         description:
-            'Studying core CS fundamentals including data structures, algorithms, operating systems, and database management. Actively applying academic knowledge through real-world full-stack projects alongside coursework.',
-        grade: 'Ongoing',
+            'Studied core CS fundamentals including data structures, algorithms, operating systems, and database management. Actively applying academic knowledge through real-world full-stack projects alongside coursework.',
+        grade: 'First Class',
         tags: ['Data Structures', 'Algorithms', 'OOP', 'Database Systems', 'Networking'],
         highlight: true,
     },
     {
         degree: 'Higher Secondary Certificate (HSC) — Science',
-        institution: 'Chattogram College, Chattogram',
-        period: '2020 — 2022',
+        institution: 'Pahartali college, chattogram',
+        period: '2017 — 2019',
         description:
             'Completed HSC with a focus on Physics, Chemistry, and Mathematics. Built strong analytical and logical thinking foundations that directly support my engineering studies.',
-        grade: 'GPA 4.42 / 5.00',
+        grade: 'passed',
         tags: ['Physics', 'Chemistry', 'Mathematics', 'Biology'],
         highlight: false,
     },
     {
         degree: 'Secondary School Certificate (SSC) — Science',
-        institution: 'Chattogram Grammar School',
-        period: '2018 — 2020',
+        institution: 'Bangladesh Railway Government High School, Akhaura',
+        period: '2015 — 2017',
         description:
             'Completed SSC with distinction. First exposure to computer science basics through the ICT subject, which sparked an interest in technology and problem-solving.',
-        grade: 'GPA 4.78 / 5.00',
+        grade: 'passed',
         tags: ['ICT', 'Mathematics', 'Science'],
         highlight: false,
     },

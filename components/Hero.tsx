@@ -3,13 +3,14 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
-import { FaGithub, FaLinkedin, FaTwitter, FaWhatsapp } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { fadeUp, fadeIn, staggerContainer, staggerItem, viewport } from '@/lib/animations';
+import { FaX } from 'react-icons/fa6';
 
 const socialLinks = [
     { icon: FaGithub, href: 'https://github.com/Mushfiq599', label: 'GitHub' },
-    { icon: FaLinkedin, href: 'https://linkedin.com/in/mushfiq', label: 'LinkedIn' },
-    { icon: FaTwitter, href: 'https://X.com/mushfiq', label: 'Twitter' },
+    { icon: FaLinkedin, href: 'https://www.linkedin.com/in/mush-fiq', label: 'LinkedIn' },
+    { icon: FaX, href: 'https://x.com/MushFiq72288867', label: 'X' },
     { icon: FaWhatsapp, href: 'https://wa.me/8801630935413', label: 'WhatsApp' },
 ];
 

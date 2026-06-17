@@ -11,13 +11,14 @@ import {
     fadeUp, fadeLeft, fadeRight,
     staggerContainer, staggerItem, viewport,
 } from '@/lib/animations';
+import { FaX } from 'react-icons/fa6';
 
 const contactDetails = [
     {
         icon: FaEnvelope,
         label: 'Email',
-        value: 'mushfiq@example.com',
-        href: 'mailto:mushfiq@example.com',
+        value: 'mellowm678@gmail.com',
+        href: 'mailto:mellowm678@gmail.com',
         color: 'var(--accent-purple)',
         bg: 'rgba(124,58,237,0.08)',
         border: 'rgba(124,58,237,0.2)',
@@ -25,8 +26,8 @@ const contactDetails = [
     {
         icon: FaPhone,
         label: 'Phone',
-        value: '+880 1XXXXXXXXX',
-        href: 'tel:+8801XXXXXXXXX',
+        value: '+880 1630935413',
+        href: 'tel:+8801630935413',
         color: 'var(--accent-cyan)',
         bg: 'rgba(6,182,212,0.08)',
         border: 'rgba(6,182,212,0.2)',
@@ -34,8 +35,8 @@ const contactDetails = [
     {
         icon: FaWhatsapp,
         label: 'WhatsApp',
-        value: '+880 1XXXXXXXXX',
-        href: 'https://wa.me/8801XXXXXXXXX',
+        value: '+880 1630935413',
+        href: 'https://wa.me/8801630935413',
         color: '#22c55e',
         bg: 'rgba(34,197,94,0.08)',
         border: 'rgba(34,197,94,0.2)',
@@ -51,12 +52,12 @@ const socialLinks = [
     {
         icon: FaLinkedin,
         label: 'LinkedIn',
-        href: 'https://linkedin.com/in/mushfiq',
+        href: 'https://www.linkedin.com/in/mush-fiq',
     },
     {
-        icon: FaTwitter,
-        label: 'Twitter',
-        href: 'https://twitter.com/mushfiq',
+        icon: FaX,
+        label: 'X',
+        href: 'https://x.com/MushFiq72288867',
     },
 ];
 
@@ -626,7 +627,7 @@ export default function Contact() {
                                 }}>
                                     I typically reply within 24 hours ·{' '}
                                     <a
-                                        href="https://wa.me/8801XXXXXXXXX"
+                                        href="https://wa.me/8801630935413"
                                         target="_blank"
                                         rel="noreferrer"
                                         style={{ color: '#22c55e', textDecoration: 'none' }}
