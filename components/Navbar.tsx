@@ -61,11 +61,16 @@ export default function Navbar() {
                 right: 0,
                 zIndex: 100,
                 padding: scrolled ? '12px 0' : '20px 0',
+                
                 background: scrolled
-                    ? 'rgba(10, 10, 15, 0.85)'
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(124,58,237,0.04) 50%, rgba(6,182,212,0.03) 100%)'
                     : 'transparent',
-                backdropFilter: scrolled ? 'blur(20px)' : 'none',
-                borderBottom: scrolled ? '1px solid var(--border)' : 'none',
+                backdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
+                WebkitBackdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
+                borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                boxShadow: scrolled
+                    ? '0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 32px rgba(0,0,0,0.25)'
+                    : 'none',
                 transition: 'all 0.4s ease',
             }}
         >
