@@ -53,9 +53,7 @@ const categories = [
             { name: 'Git', icon: FaGitAlt, level: 85 },
             { name: 'GitHub', icon: SiGithub, level: 88 },
             { name: 'Vercel', icon: SiVercel, level: 80 },
-            { name: 'Docker', icon: FaDocker, level: 55 },
             { name: 'Figma', icon: FaFigma, level: 65 },
-            { name: 'Postman', icon: SiPostman, level: 80 },
         ],
     },
 ];
