@@ -2,8 +2,8 @@
 
 A modern, highly animated personal portfolio website built with **Next.js 15 App Router**, featuring premium animations with **Framer Motion** and **GSAP**, buttery smooth scrolling via **Lenis**, live GitHub activity, and a dark glassmorphism design system.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-7C3AED?style=for-the-badge&logo=vercel)](https://mushfiq-portfolio.vercel.app)
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-06B6D4?style=for-the-badge&logo=github)](https://github.com/Mushfiq599/mushfiq-portfolio)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-7C3AED?style=for-the-badge&logo=vercel)](https://mushfiq-s-portfolio.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repo-06B6D4?style=for-the-badge&logo=github)](https://github.com/Mushfiq599/mushfiq-s-Portfolio)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 
 ---
@@ -76,9 +76,9 @@ mushfiq-portfolio/
 │   └── index.ts                # Shared TypeScript types
 │
 └── public/
-    ├── resume.pdf              # Your resume
+    ├── resume.pdf              # Resume
     └── images/
-        └── hero-photo.jpeg     # Your profile photo
+        └── hero-photo.jpeg     # Profile photo
 ```
 
 ---
