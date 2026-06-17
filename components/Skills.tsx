@@ -3,13 +3,12 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
-    FaReact, FaNodeJs, FaDatabase, FaGitAlt,
-    FaDocker, FaFigma,
+    FaReact, FaNodeJs, FaDatabase, FaGitAlt, FaFigma,
 } from 'react-icons/fa';
 import {
     SiNextdotjs, SiTypescript, SiTailwindcss, SiMongodb,
     SiFirebase, SiExpress, SiJavascript, SiHtml5,
-    SiCss, SiGithub, SiVercel, SiPostman,
+    SiCss, SiGithub, SiVercel,
 } from 'react-icons/si';
 import {
     staggerContainer, staggerItem, fadeUp, viewport
