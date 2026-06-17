@@ -299,13 +299,27 @@ export default function Hero() {
                     {/* Stats */}
                     <motion.div
                         variants={staggerItem}
-                        style={{ display: 'flex', gap: '32px' }}
+                        style={{
+                            display: 'flex',
+                            gap: '24px',
+                            flexWrap: 'wrap',
+                        }}
                     >
                         {stats.map(({ number, label }) => (
-                            <div key={label}>
+                            <div
+                                key={label}
+                                style={{
+                                    padding: '12px 20px',
+                                    background: 'var(--glass)',
+                                    border: '1px solid var(--border)',
+                                    borderRadius: '12px',
+                                    minWidth: '80px',
+                                    textAlign: 'center',
+                                }}
+                            >
                                 <div style={{
                                     fontFamily: 'var(--font-space)',
-                                    fontSize: '1.8rem',
+                                    fontSize: '1.5rem',
                                     fontWeight: 700,
                                     color: 'var(--text-primary)',
                                     lineHeight: 1,
@@ -313,9 +327,10 @@ export default function Hero() {
                                     {number}
                                 </div>
                                 <div style={{
-                                    fontSize: '0.8rem',
+                                    fontSize: '0.75rem',
                                     color: 'var(--text-muted)',
                                     marginTop: '4px',
+                                    whiteSpace: 'nowrap',
                                 }}>
                                     {label}
                                 </div>
@@ -451,21 +466,24 @@ export default function Hero() {
 
             {/* Pulse animation for green dot */}
             <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-
-        @media (max-width: 768px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
-            text-align: center;
-          }
-          .hero-grid > div:last-child {
-            order: -1;
-          }
-        }
-      `}</style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @media (max-width: 768px) {
+    .hero-grid {
+      grid-template-columns: 1fr !important;
+      text-align: center;
+    }
+    .hero-grid > div:last-child {
+      order: -1;
+    }
+    /* Center the stats row on mobile */
+    .hero-grid > div:first-child > div:last-child {
+      justify-content: center;
+    }
+  }
+`}</style>
         </section>
     );
 }
