@@ -269,7 +269,7 @@ export default function Projects() {
                         className="section-tag"
                         style={{ opacity: 0, display: 'inline-flex' }}
                     >
-                        05 — Projects
+                        06 — Projects
                     </span>
 
                     <div

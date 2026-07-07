@@ -166,7 +166,7 @@ export default function Contact() {
                     viewport={viewport}
                     style={{ marginBottom: '64px' }}
                 >
-                    <span className="section-tag">06 — Contact</span>
+                    <span className="section-tag">07 — Contact</span>
                     <h2 className="section-heading">
                         Let's <span className="gradient-text">work together</span>
                     </h2>

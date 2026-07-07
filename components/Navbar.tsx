@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { navbarVariants, fadeIn } from '@/lib/animations';
 
 const navItems = [
-    { label: 'About', href: 'about' },
-    { label: 'Skills', href: 'skills' },
-    { label: 'Education', href: 'education' },
-    { label: 'Experience', href: 'experience' },
-    { label: 'Projects', href: 'projects' },
-    { label: 'GitHub', href: 'github' },
-    { label: 'Contact', href: 'contact' },
+  { label: 'About', href: 'about' },
+  { label: 'Skills', href: 'skills' },
+  { label: 'Education', href: 'education' },
+  { label: 'Experience', href: 'experience' },
+  { label: 'Certificate', href: 'certificates' },
+  { label: 'Projects', href: 'projects' },
+  { label: 'GitHub', href: 'github' },
+  { label: 'Contact', href: 'contact' },
 ];
 
 export default function Navbar() {
