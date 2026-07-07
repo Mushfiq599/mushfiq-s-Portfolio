@@ -8,7 +8,6 @@ import {
   FaMedal, FaCalendarAlt, FaHashtag,
   FaExternalLinkAlt, FaCode, FaExpand, FaTimes,
 } from 'react-icons/fa';
-import { SiProgramminghero } from 'react-icons/si';
 import { fadeUp, staggerContainer, staggerItem, viewport } from '@/lib/animations';
 
 gsap.registerPlugin(ScrollTrigger);
