@@ -12,6 +12,7 @@ import {
     staggerContainer, staggerItem, viewport,
 } from '@/lib/animations';
 import { FaX } from 'react-icons/fa6';
+import emailjs from '@emailjs/browser';
 
 const contactDetails = [
     {
@@ -85,24 +86,38 @@ export default function Contact() {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleSubmit = async (e: React.MouseEvent) => {
-        e.preventDefault();
+   const handleSubmit = async (e: React.MouseEvent) => {
+  e.preventDefault();
 
-        // Basic validation
-        if (!form.name || !form.email || !form.message) return;
+  if (!form.name || !form.email || !form.message) return;
 
-        setStatus('sending');
+  setStatus('sending');
 
-        // Simulate sending — replace with your actual API call or EmailJS
-        await new Promise((res) => setTimeout(res, 1800));
-        setStatus('success');
+  try {
+    await emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+      {
+        from_name: form.name,
+        from_email: form.email,
+        subject: form.subject || 'No subject',
+        message: form.message,
+      },
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+    );
 
-        // Reset after 4 seconds
-        setTimeout(() => {
-            setStatus('idle');
-            setForm({ name: '', email: '', subject: '', message: '' });
-        }, 4000);
-    };
+    setStatus('success');
+    setTimeout(() => {
+      setStatus('idle');
+      setForm({ name: '', email: '', subject: '', message: '' });
+    }, 4000);
+
+  } catch (error) {
+    console.error('EmailJS error:', error);
+    setStatus('error');
+    setTimeout(() => setStatus('idle'), 3000);
+  }
+};
 
     const inputStyle: React.CSSProperties = {
         width: '100%',
