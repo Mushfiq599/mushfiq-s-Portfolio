@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { navbarVariants, fadeIn } from '@/lib/animations';
 
 const navItems = [
-  { label: 'About', href: 'about' },
-  { label: 'Skills', href: 'skills' },
-  { label: 'Education', href: 'education' },
-  { label: 'Experience', href: 'experience' },
-  { label: 'Certificate', href: 'certificates' },
-  { label: 'Projects', href: 'projects' },
-  { label: 'GitHub', href: 'github' },
-  { label: 'Contact', href: 'contact' },
+    { label: 'About', href: 'about' },
+    { label: 'Skills', href: 'skills' },
+    { label: 'Education', href: 'education' },
+    { label: 'Experience', href: 'experience' },
+    { label: 'Certificate', href: 'certificates' },
+    { label: 'Projects', href: 'projects' },
+    { label: 'GitHub', href: 'github' },
+    { label: 'Contact', href: 'contact' },
 ];
 
 export default function Navbar() {
@@ -142,7 +142,8 @@ export default function Navbar() {
                     <li>
                         <motion.a
                             href="/resume.pdf"
-                            download
+                            target="_blank"
+                            rel="noreferrer"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             style={{
@@ -159,7 +160,7 @@ export default function Navbar() {
                                 marginLeft: '8px',
                             }}
                         >
-                            Resume ↓
+                            Resume ↗
                         </motion.a>
                     </li>
                 </ul>
@@ -252,9 +253,7 @@ export default function Navbar() {
                                 transition={{ delay: 0.4 }}
                                 style={{ marginTop: '12px' }}
                             >
-                                <a
-                                    href="/resume.pdf"
-                                    download
+                                <a href="/resume.pdf" target="_blank" rel="noreferrer"
                                     style={{
                                         display: 'block',
                                         textAlign: 'center',
@@ -266,7 +265,7 @@ export default function Navbar() {
                                         textDecoration: 'none',
                                     }}
                                 >
-                                    Download Resume ↓
+                                    View Resume ↗
                                 </a>
                             </motion.li>
                         </ul>

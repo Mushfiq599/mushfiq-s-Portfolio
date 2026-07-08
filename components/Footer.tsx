@@ -214,9 +214,7 @@ export default function Footer() {
                         </div>
 
                         {/* Resume download */}
-                        <motion.a
-                            href="/resume.pdf"
-                            download
+                        <motion.a href="/resume.pdf" target="_blank" rel="noreferrer"
                             whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.97 }}
                             style={{
@@ -233,7 +231,7 @@ export default function Footer() {
                                 textDecoration: 'none',
                             }}
                         >
-                            Download Resume ↓
+                            View Resume ↗
                         </motion.a>
                     </div>
                 </motion.div>

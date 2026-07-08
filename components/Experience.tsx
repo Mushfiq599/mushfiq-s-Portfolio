@@ -306,9 +306,7 @@ export default function Experience() {
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                        <motion.a
-                            href="/resume.pdf"
-                            download
+                        <motion.a href="/resume.pdf" target="_blank" rel="noreferrer"
                             whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.97 }}
                             style={{
@@ -322,7 +320,7 @@ export default function Experience() {
                                 textDecoration: 'none',
                             }}
                         >
-                            Download Resume ↓
+                            View Resume ↗
                         </motion.a>
                         <motion.button
                             onClick={() =>

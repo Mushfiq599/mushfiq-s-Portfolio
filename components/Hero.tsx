@@ -235,7 +235,8 @@ export default function Hero() {
 
                         <motion.a
                             href="/resume.pdf"
-                            download
+                            target="_blank"
+                            rel="noreferrer"
                             whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.97 }}
                             style={{
@@ -253,7 +254,7 @@ export default function Hero() {
                                 backdropFilter: 'blur(8px)',
                             }}
                         >
-                            Download Resume ↓
+                            View Resume ↗
                         </motion.a>
                     </motion.div>
 
