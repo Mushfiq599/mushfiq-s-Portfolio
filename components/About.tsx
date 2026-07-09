@@ -118,25 +118,16 @@ export default function About() {
                             fontSize: '0.97rem',
                         }}>
                             <p>
-                                It started with curiosity — I wanted to understand how websites actually
-                                worked under the hood. What began as tweaking HTML quickly turned into
-                                a deep dive into JavaScript, then React, and eventually the full MERN stack.
+                                It started with pure curiosity. I just wanted to see how websites actually worked under the hood. What began as messing around with basic HTML quickly spiraled into a deep dive through JavaScript, then React, and eventually the full MERN stack.
                             </p>
                             <p>
-                                I just graduated as a CSE student from BGC Trust University, Bangladesh, where I balanced academic
-                                learning with hands-on project building. Most of what I know came from
-                                building real things, breaking them, and figuring out why.
+                                I recently graduated with a CSE degree from BGC Trust University, Bangladesh. While school gave me the fundamentals, the real learning happened when I was building hands-on projects, which usually involved breaking things and then spending hours figuring out why.
                             </p>
                             <p>
-                                I gravitate toward projects that have a clear impact — platforms where
-                                real users log in, book things, manage data, and come back the next day.
-                                I care deeply about the details: the micro-animation that makes an
-                                interaction feel satisfying, the loading state that keeps users informed,
-                                the error message that actually helps.
+                                I’ve always gravitated toward building things with a purpose, like platforms where real people log in, manage data, and actually come back the next day. I'm also a bit obsessive over the details, whether it's a micro-animation that makes a button click feel satisfying, a proper loading state, or an error message that actually makes sense to a human.
                             </p>
                             <p>
-                                Outside of coding, you'll find me playing chess, following tech YouTube
-                                rabbit holes, or experimenting with UI concepts I'll probably never ship.
+                                When I’m not staring at a code editor, I’m usually playing chess, falling down tech YouTube rabbit holes, or messing around with UI concepts that will probably never see the light of day.
                             </p>
                         </div>
 
@@ -264,7 +255,7 @@ export default function About() {
                                 color: 'var(--text-primary)',
                                 marginBottom: '4px',
                             }}>
-                                GadgetHub — Next.js Tech Showcase Platform
+                                English Janala — Next.js Learning Platform
                             </div>
                             <div style={{
                                 fontSize: '0.85rem',
