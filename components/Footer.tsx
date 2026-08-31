@@ -82,7 +82,7 @@ export default function Footer() {
                                 display: 'block',
                             }}
                         >
-                            M<span style={{ color: 'var(--accent-purple)' }}>.</span>
+                            Mushfiq<span style={{ color: 'var(--accent-purple)' }}>.</span>
                         </button>
                         <p style={{
                             fontSize: '0.85rem',

@@ -98,7 +98,7 @@ export default function Navbar() {
                         letterSpacing: '-0.03em',
                     }}
                 >
-                    M<span style={{ color: 'var(--accent-purple)' }}>.</span>
+                    Mushfiq<span style={{ color: 'var(--accent-purple)' }}>.</span>
                 </motion.button>
 
                 {/* Desktop Nav */}

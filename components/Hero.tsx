@@ -373,7 +373,7 @@ export default function Hero() {
                             background: 'var(--bg-secondary)',
                         }}>
                             <img
-                                src="../portfolio-hero.png"
+                                src="/images/hero.jpeg"
                                 alt="Mushfiq — Full Stack Developer"
                                 style={{
                                     width: '100%',
