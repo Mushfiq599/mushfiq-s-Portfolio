@@ -12,22 +12,27 @@ gsap.registerPlugin(ScrollTrigger);
 
 const projects: Project[] = [
     {
-        title: 'Care.xyz',
-        description: 'A trusted care platform connecting verified caretakers with families needing help for children, elderly parents, and sick members.',
-        detailedDescription: 'Care.xyz is a full-stack care services booking platform built with Next.js 14 and the App Router. It features Google OAuth via NextAuth, a multi-step booking flow with location dropdowns, Stripe payment integration, Nodemailer invoice emails, and an admin dashboard for managing bookings and users.',
-        technologies: ['Next.js 14', 'NextAuth', 'MongoDB', 'Stripe', 'Nodemailer', 'Tailwind CSS'],
-        github: 'https://github.com/Mushfiq599/care-xyz',
-        live: 'https://care-xyz-rouge.vercel.app',
-        image: 'https://i.ibb.co.com/zHB78qS7/Screenshot-354.png',
+        title: 'English Janala',
+        description:
+            'An interactive English vocabulary learning platform for ages 5–30, with age-adaptive UI, quiz modes, leaderboard, and IELTS/TOEFL exam packs.',
+        detailedDescription:
+            'English Janala is a full-featured vocabulary learning platform built with Next.js and deployed on Vercel. It features three completely different interfaces that adapt based on the user\'s age — a fun adventure map for kids, a streak-based XP system for teens, and an academic word list dashboard for adults. The platform includes multiple learning modes: structured lessons, flashcards, quiz mode, a typing challenge, and curated exam prep packs for IELTS, TOEFL, and the Academic Word List. Users can save words to a personal collection, track progress across lessons, compete on a global leaderboard, and hear native pronunciation audio for every word. The app supports dark mode and features confetti celebrations on quiz completion.',
+        technologies: [
+            'Next.js', 'React', 'TypeScript', 'Tailwind CSS',
+            'Firebase Auth', 'MongoDB', 'REST API', 'Vercel',
+        ],
+        github: 'https://github.com/Mushfiq599/English-Janala',
+        live: 'https://english-janala-azure.vercel.app',
+        image: '/images/english-janala.png',
         challenges: [
-            'Implementing async params correctly in Next.js 14 dynamic routes',
-            'Syncing Stripe webhook events with MongoDB booking status updates',
-            'Building a multi-step form with persistent state across page navigations',
+            'Building three fully separate age-adaptive UI themes (kids, teens, adults) that switch dynamically based on user profile without duplicating components',
+            'Implementing a streak system that correctly tracks daily login consistency across timezones',
+            'Syncing lesson progress, saved words, and leaderboard scores in real time without causing stale state across different learning modes',
         ],
         improvements: [
-            'Add real-time chat between caretaker and family using Socket.io',
-            'Mobile app version with React Native',
-            'AI-powered caretaker matching based on requirements',
+            'Add spaced repetition algorithm (SM-2) for smarter vocabulary review scheduling',
+            'Build a mobile app with React Native so learners can practice offline',
+            'Add AI-generated example sentences and contextual usage tips per word',
         ],
     },
     {
@@ -50,22 +55,22 @@ const projects: Project[] = [
         ],
     },
     {
-        title: 'TaskNova',
-        description: 'A micro-task and earning platform with a three-role coin economy — Worker, Buyer, and Admin — with Stripe integration.',
-        detailedDescription: 'TaskNova is a micro-task marketplace built with Next.js App Router, Tailwind CSS v4, Firebase Auth, JWT, and Stripe. It features a three-role coin economy where Buyers post tasks with coin rewards, Workers complete them for earnings, and Admins manage the ecosystem.',
-        technologies: ['Next.js', 'Tailwind CSS v4', 'Firebase Auth', 'JWT', 'Stripe', 'MongoDB'],
-        github: 'https://github.com/Mushfiq599/tasknova',
-        live: 'https://github.com/Mushfiq599/tasknova',
-        image: 'https://i.ibb.co.com/bRRPVZK8/Screenshot-357.png',
+        title: 'Care.xyz',
+        description: 'A trusted care platform connecting verified caretakers with families needing help for children, elderly parents, and sick members.',
+        detailedDescription: 'Care.xyz is a full-stack care services booking platform built with Next.js 14 and the App Router. It features Google OAuth via NextAuth, a multi-step booking flow with location dropdowns, Stripe payment integration, Nodemailer invoice emails, and an admin dashboard for managing bookings and users.',
+        technologies: ['Next.js 14', 'NextAuth', 'MongoDB', 'Stripe', 'Nodemailer', 'Tailwind CSS'],
+        github: 'https://github.com/Mushfiq599/care-xyz',
+        live: 'https://care-xyz-rouge.vercel.app',
+        image: 'https://i.ibb.co.com/zHB78qS7/Screenshot-354.png',
         challenges: [
-            'MongoDB SRV DNS failures on ISP in Bangladesh — fixed with direct connection string',
-            'Implementing a fair coin economy that prevents abuse across three roles',
-            'Tailwind CSS v4 @variant dark directive syntax differences from v3',
+            'Implementing async params correctly in Next.js 14 dynamic routes',
+            'Syncing Stripe webhook events with MongoDB booking status updates',
+            'Building a multi-step form with persistent state across page navigations',
         ],
         improvements: [
-            'Add an escrow system to hold coins until task is verified complete',
-            'Build a dispute resolution flow between Buyers and Workers',
-            'Add task categories and AI-powered task suggestions',
+            'Add real-time chat between caretaker and family using Socket.io',
+            'Mobile app version with React Native',
+            'AI-powered caretaker matching based on requirements',
         ],
     },
     {
