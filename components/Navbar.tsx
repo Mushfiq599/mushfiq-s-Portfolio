@@ -106,7 +106,6 @@ export default function Navbar() {
                         }}
                     />
                 </motion.button>
-
                 {/* Desktop Nav */}
                 <ul style={{
                     display: 'flex',
