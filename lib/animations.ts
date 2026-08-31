@@ -73,17 +73,15 @@ export const navbarVariants: Variants = {
 };
 
 export const modalVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.92, y: 20 },
+    hidden: { opacity: 0, scale: 0.92 },
     visible: {
         opacity: 1,
         scale: 1,
-        y: 0,
         transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
     },
     exit: {
         opacity: 0,
         scale: 0.92,
-        y: 20,
         transition: { duration: 0.3, ease: 'easeIn' }
     }
 };
