@@ -20,7 +20,7 @@ const certificates = [
     issuedTo: 'Mushfiqur Rahman',
     date: 'January 2026',
     credentialId: 'WEB12-3184',
-    image: '/images/certificate-programming-hero.jpg',
+    image: '/images/cert-programming-hero.png',
     accentColor: 'var(--accent-purple)',
     accentBg: 'rgba(124,58,237,0.08)',
     accentBorder: 'rgba(124,58,237,0.2)',
