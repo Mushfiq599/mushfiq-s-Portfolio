@@ -73,16 +73,20 @@ export default function Footer() {
                             style={{
                                 background: 'none',
                                 border: 'none',
-                                fontFamily: 'var(--font-space)',
-                                fontSize: '1.6rem',
-                                fontWeight: 700,
-                                color: 'var(--text-primary)',
-                                letterSpacing: '-0.03em',
+                                padding: 0,
                                 marginBottom: '12px',
                                 display: 'block',
                             }}
                         >
-                            Mushfiq<span style={{ color: 'var(--accent-purple)' }}>.</span>
+                            <img
+                                src="/images/logo.png"
+                                alt="Mushfiq Logo"
+                                style={{
+                                    height: '48px',
+                                    width: 'auto',
+                                    objectFit: 'contain',
+                                }}
+                            />
                         </button>
                         <p style={{
                             fontSize: '0.85rem',

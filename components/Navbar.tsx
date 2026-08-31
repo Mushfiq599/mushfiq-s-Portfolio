@@ -91,14 +91,20 @@ export default function Navbar() {
                     style={{
                         background: 'none',
                         border: 'none',
-                        fontFamily: 'var(--font-space)',
-                        fontSize: '1.4rem',
-                        fontWeight: 700,
-                        color: 'var(--text-primary)',
-                        letterSpacing: '-0.03em',
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
                     }}
                 >
-                    Mushfiq<span style={{ color: 'var(--accent-purple)' }}>.</span>
+                    <img
+                        src="/images/logo.png"
+                        alt="Mushfiq Logo"
+                        style={{
+                            height: '42px',
+                            width: 'auto',
+                            objectFit: 'contain',
+                        }}
+                    />
                 </motion.button>
 
                 {/* Desktop Nav */}
