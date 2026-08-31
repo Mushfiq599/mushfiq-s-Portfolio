@@ -73,16 +73,16 @@ export const navbarVariants: Variants = {
 };
 
 export const modalVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.92 },
+    hidden: { opacity: 0, scale: 0.9 },
     visible: {
         opacity: 1,
         scale: 1,
-        transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+        transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
     },
     exit: {
         opacity: 0,
-        scale: 0.92,
-        transition: { duration: 0.3, ease: 'easeIn' }
+        scale: 0.9,
+        transition: { duration: 0.25, ease: 'easeIn' }
     }
 };
 
@@ -92,5 +92,4 @@ export const overlayVariants: Variants = {
     exit: { opacity: 0, transition: { duration: 0.3 } }
 };
 
-// Viewport config reused across all sections
 export const viewport = { once: true, margin: '-80px' };

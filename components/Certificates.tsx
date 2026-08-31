@@ -6,9 +6,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   FaMedal, FaCalendarAlt, FaHashtag,
-  FaExpand, FaTimes, FaCode, FaChevronLeft, FaChevronRight,
+  FaExpand, FaTimes,
 } from 'react-icons/fa';
-import { fadeUp, viewport } from '@/lib/animations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +19,7 @@ const certificates = [
     issuedTo: 'Mushfiqur Rahman',
     date: 'January 2026',
     credentialId: 'WEB12-3184',
-    image: '/images/cert-programming-hero.png',
+    image: '/images/certificate-programming-hero.png',
     accentColor: 'var(--accent-purple)',
     accentBg: 'rgba(124,58,237,0.08)',
     accentBorder: 'rgba(124,58,237,0.2)',
@@ -77,7 +76,6 @@ export default function Certificates() {
   const cardsRef = useRef<HTMLDivElement>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxName, setLightboxName] = useState<string>('');
-  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
