@@ -4,6 +4,13 @@ const GITHUB_USERNAME = 'Mushfiq599';
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 export async function GET() {
+    if (!GITHUB_TOKEN) {
+        return NextResponse.json(
+            { error: 'GITHUB_TOKEN not set', pinned: [], languages: [] },
+            { status: 401 }
+        );
+    }
+
     try {
         const query = `
       {
@@ -16,32 +23,23 @@ export async function GET() {
                 url
                 stargazerCount
                 forkCount
-                primaryLanguage {
-                  name
-                  color
-                }
-                languages(first: 5, orderBy: {field: SIZE, direction: DESC}) {
+                pushedAt
+                primaryLanguage { name color }
+                languages(first: 5, orderBy: { field: SIZE, direction: DESC }) {
                   edges {
                     size
-                    node {
-                      name
-                      color
-                    }
+                    node { name color }
                   }
                 }
-                pushedAt
               }
             }
           }
-          repositories(first: 100, privacy: PUBLIC) {
+          repositories(first: 100, privacy: PUBLIC, orderBy: { field: PUSHED_AT, direction: DESC }) {
             nodes {
-              languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+              languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
                 edges {
                   size
-                  node {
-                    name
-                    color
-                  }
+                  node { name color }
                 }
               }
             }
@@ -61,20 +59,22 @@ export async function GET() {
             next: { revalidate: 3600 },
         });
 
-        if (!res.ok) throw new Error(`GraphQL API ${res.status}`);
+        const json = await res.json();
 
-        const { data, errors } = await res.json();
-        if (errors) throw new Error(errors[0].message);
+        if (json.errors) throw new Error(json.errors[0].message);
+
+        const user = json.data?.user;
+        if (!user) throw new Error('No user data returned');
 
         // ── Pinned repos ──────────────────────────────
-        const pinned = data.user.pinnedItems.nodes.map((repo: any) => ({
+        const pinned = (user.pinnedItems?.nodes || []).map((repo: any) => ({
             name: repo.name,
             description: repo.description || '',
             url: repo.url,
             stars: repo.stargazerCount,
             forks: repo.forkCount,
-            primaryLanguage: repo.primaryLanguage,
-            languages: repo.languages.edges.map((e: any) => ({
+            primaryLanguage: repo.primaryLanguage || null,
+            languages: (repo.languages?.edges || []).map((e: any) => ({
                 name: e.node.name,
                 color: e.node.color || '#7C3AED',
                 size: e.size,
@@ -82,10 +82,10 @@ export async function GET() {
             pushedAt: repo.pushedAt,
         }));
 
-        // ── Language totals across ALL repos ──────────
+        // ── Language totals ───────────────────────────
         const langTotals: Record<string, { size: number; color: string }> = {};
-        data.user.repositories.nodes.forEach((repo: any) => {
-            repo.languages.edges.forEach((e: any) => {
+        (user.repositories?.nodes || []).forEach((repo: any) => {
+            (repo.languages?.edges || []).forEach((e: any) => {
                 const name = e.node.name;
                 if (!langTotals[name]) {
                     langTotals[name] = { size: 0, color: e.node.color || '#7C3AED' };
@@ -108,6 +108,10 @@ export async function GET() {
         return NextResponse.json({ pinned, languages });
 
     } catch (err: any) {
-        return NextResponse.json({ error: err.message }, { status: 500 });
+        console.error('Pinned API error:', err.message);
+        return NextResponse.json(
+            { error: err.message, pinned: [], languages: [] },
+            { status: 500 }
+        );
     }
 }
