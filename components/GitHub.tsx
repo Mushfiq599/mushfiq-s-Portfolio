@@ -91,26 +91,47 @@ function Skeleton({ w = '100%', h = '16px', radius = '6px' }: {
 
 // ── Donut chart ───────────────────────────────────
 function DonutChart({ languages }: { languages: Language[] }) {
-    const size = 160;
-    const strokeWidth = 18;
+    const size = 200;
+    const strokeWidth = 22;
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
+    const gap = 3;
+    const gapInUnits = (gap / 360) * circumference;
 
     let offset = 0;
     const segments = languages.slice(0, 6).map((lang) => {
-        const dash = (lang.percentage / 100) * circumference;
-        const gap = circumference - dash;
-        const seg = { ...lang, dash, gap, offset };
-        offset += dash;
+        const dash = Math.max(0, (lang.percentage / 100) * circumference - gapInUnits);
+        const seg = { ...lang, dash, offset };
+        offset += (lang.percentage / 100) * circumference;
         return seg;
     });
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap' }}>
+        <div style={{
+            display: 'grid',
+            gridTemplateColumns: '220px 1fr',
+            gap: '32px',
+            alignItems: 'center',
+        }}
+            className="donut-grid"
+        >
             {/* Donut */}
-            <div style={{ position: 'relative', flexShrink: 0 }}>
-                <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-                    {/* Track */}
+            <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+                <div style={{
+                    position: 'absolute', inset: '-8px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)',
+                    filter: 'blur(8px)',
+                    pointerEvents: 'none',
+                }} />
+
+                <svg
+                    width={size} height={size}
+                    style={{
+                        transform: 'rotate(-90deg)',
+                        filter: 'drop-shadow(0 0 8px rgba(124,58,237,0.3))',
+                    }}
+                >
                     <circle
                         cx={size / 2} cy={size / 2} r={radius}
                         fill="none"
@@ -124,71 +145,136 @@ function DonutChart({ languages }: { languages: Language[] }) {
                             fill="none"
                             stroke={seg.color}
                             strokeWidth={strokeWidth}
-                            strokeDasharray={`${seg.dash} ${seg.gap}`}
+                            strokeDasharray={`${seg.dash} ${circumference - seg.dash}`}
                             strokeDashoffset={-seg.offset}
                             strokeLinecap="round"
-                            initial={{ strokeDasharray: `0 ${circumference}` }}
-                            animate={{ strokeDasharray: `${seg.dash} ${seg.gap}` }}
-                            transition={{ duration: 1, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                            initial={{ strokeDasharray: `0 ${circumference}`, opacity: 0 }}
+                            animate={{
+                                strokeDasharray: `${seg.dash} ${circumference - seg.dash}`,
+                                opacity: 1,
+                            }}
+                            transition={{ duration: 1.2, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                            style={{ filter: `drop-shadow(0 0 6px ${seg.color}88)` }}
                         />
                     ))}
                 </svg>
-                {/* Center label */}
+
+                {/* Center */}
                 <div style={{
                     position: 'absolute', inset: 0,
                     display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center',
+                    alignItems: 'center', justifyContent: 'center', gap: '2px',
                 }}>
-                    <div style={{
-                        fontFamily: 'var(--font-space)',
-                        fontSize: '1.1rem', fontWeight: 800,
-                        color: 'var(--text-primary)',
-                    }}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        style={{
+                            fontFamily: 'var(--font-space)',
+                            fontSize: '2rem', fontWeight: 900,
+                            color: 'var(--text-primary)', lineHeight: 1,
+                        }}
+                    >
                         {languages.length}
-                    </div>
-                    <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                        LANGS
+                    </motion.div>
+                    <div style={{
+                        fontSize: '0.58rem', fontWeight: 700,
+                        color: 'var(--text-muted)',
+                        letterSpacing: '0.15em', textTransform: 'uppercase',
+                    }}>
+                        Languages
                     </div>
                 </div>
             </div>
 
-            {/* Legend */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                {languages.slice(0, 6).map((lang) => (
-                    <div key={lang.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* Language list */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {languages.slice(0, 6).map((lang, i) => (
+                    <motion.div
+                        key={lang.name}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                    >
                         <div style={{
-                            width: '8px', height: '8px', borderRadius: '50%',
+                            width: '10px', height: '10px', borderRadius: '50%',
                             background: lang.color, flexShrink: 0,
+                            boxShadow: `0 0 8px ${lang.color}88`,
                         }} />
-                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', flex: 1 }}>
+                        <span style={{
+                            fontSize: '0.82rem', fontWeight: 600,
+                            color: 'var(--text-primary)', minWidth: '90px',
+                        }}>
                             {lang.name}
                         </span>
-                        {/* Mini bar */}
                         <div style={{
-                            width: '60px', height: '4px',
-                            background: 'rgba(255,255,255,0.06)',
-                            borderRadius: '4px', overflow: 'hidden',
+                            flex: 1, height: '6px',
+                            background: 'rgba(255,255,255,0.05)',
+                            borderRadius: '6px', overflow: 'hidden',
                         }}>
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${lang.percentage}%` }}
-                                transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                                transition={{ duration: 1.2, delay: 0.3 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                                 style={{
                                     height: '100%',
-                                    background: lang.color,
-                                    borderRadius: '4px',
+                                    background: `linear-gradient(to right, ${lang.color}88, ${lang.color})`,
+                                    borderRadius: '6px',
+                                    boxShadow: `0 0 8px ${lang.color}55`,
                                 }}
                             />
                         </div>
-                        <span style={{
-                            fontSize: '0.7rem', fontWeight: 700,
-                            color: 'var(--text-muted)', minWidth: '28px',
-                            textAlign: 'right',
-                        }}>
+                        <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 + i * 0.08 }}
+                            style={{
+                                fontSize: '0.78rem', fontWeight: 800,
+                                color: lang.color, minWidth: '36px',
+                                textAlign: 'right', fontFamily: 'var(--font-space)',
+                            }}
+                        >
                             {lang.percentage}%
+                        </motion.span>
+                    </motion.div>
+                ))}
+
+                {/* Combined bar */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2 }}
+                    style={{ marginTop: '8px' }}
+                >
+                    <div style={{
+                        height: '8px', borderRadius: '8px',
+                        overflow: 'hidden', display: 'flex', gap: '2px',
+                        boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                    }}>
+                        {languages.slice(0, 6).map((lang, i) => (
+                            <motion.div
+                                key={lang.name}
+                                initial={{ flex: 0 }}
+                                animate={{ flex: lang.percentage }}
+                                transition={{ duration: 1.2, delay: 0.5 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                                style={{
+                                    height: '100%', background: lang.color,
+                                    boxShadow: `0 0 6px ${lang.color}66`,
+                                }}
+                            />
+                        ))}
+                    </div>
+                    <div style={{
+                        display: 'flex', justifyContent: 'space-between',
+                        marginTop: '6px', fontSize: '0.65rem', color: 'var(--text-muted)',
+                    }}>
+                        <span>Language distribution</span>
+                        <span>
+                            {languages.slice(0, 6).reduce((s, l) => s + l.percentage, 0)}% of codebase
                         </span>
                     </div>
-                ))}
+                </motion.div>
             </div>
         </div>
     );
@@ -237,7 +323,7 @@ export default function GitHub() {
         fetchAll();
     }, []);
 
-    // GSAP — galaxy particles + counter animation
+    // GSAP — galaxy particles + animated counters
     useEffect(() => {
         if (loading || error) return;
         const ctx = gsap.context(() => {
@@ -259,19 +345,18 @@ export default function GitHub() {
             counterRefs.current.forEach((el) => {
                 if (!el) return;
                 const target = parseInt(el.dataset.target || '0');
+                const suffix = el.dataset.suffix || '';
                 gsap.fromTo(
                     el,
-                    { innerText: 0 },
+                    { innerText: '0' + suffix },
                     {
-                        innerText: target,
                         duration: 2,
                         ease: 'power2.out',
-                        snap: { innerText: 1 },
                         scrollTrigger: { trigger: el, start: 'top 85%' },
                         onUpdate: function () {
-                            el.innerText = Math.round(
-                                parseFloat(el.innerText)
-                            ).toString() + (el.dataset.suffix || '');
+                            const progress = this.progress();
+                            const current = Math.round(target * progress);
+                            el.innerText = current.toString() + suffix;
                         },
                     }
                 );
@@ -478,8 +563,7 @@ export default function GitHub() {
                                 <div style={{
                                     display: 'grid',
                                     gridTemplateColumns: '1fr 1fr 1fr',
-                                    gap: '8px',
-                                    width: '100%',
+                                    gap: '8px', width: '100%',
                                 }}>
                                     {[
                                         { label: 'Repos', value: user.public_repos },
@@ -571,7 +655,6 @@ export default function GitHub() {
                                     }}>
                                         <Icon />
                                     </div>
-                                    {/* Animated counter */}
                                     <div
                                         ref={(el) => { if (el) counterRefs.current[idx] = el; }}
                                         data-target={value}
@@ -618,7 +701,7 @@ export default function GitHub() {
 
                     {loading ? (
                         <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                            <Skeleton w="160px" h="160px" radius="50%" />
+                            <Skeleton w="200px" h="200px" radius="50%" />
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
                                     <Skeleton key={i} w="100%" h="14px" />
@@ -629,7 +712,7 @@ export default function GitHub() {
                         <DonutChart languages={languages} />
                     ) : (
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                            No language data available.
+                            No language data available — add a GITHUB_TOKEN env variable.
                         </p>
                     )}
                 </motion.div>
@@ -663,7 +746,6 @@ export default function GitHub() {
                         }}>
                             Contribution activity — last 12 months
                         </h3>
-                        {/* Gradient legend */}
                         <div style={{
                             display: 'flex', alignItems: 'center',
                             gap: '6px', fontSize: '0.72rem', color: 'var(--text-muted)',
@@ -729,7 +811,7 @@ export default function GitHub() {
                                     ))}
                                 </div>
 
-                                {/* Cells */}
+                                {/* Heatmap cells */}
                                 <div style={{
                                     display: 'grid',
                                     gridTemplateColumns: `repeat(${weeks.length}, 13px)`,
@@ -833,7 +915,7 @@ export default function GitHub() {
                                     <Skeleton w="70%" h="12px" />
                                 </div>
                             ))
-                            : (pinned.length > 0 ? pinned : []).map((repo) => (
+                            : pinned.map((repo) => (
                                 <motion.a
                                     key={repo.name}
                                     href={repo.url}
@@ -953,6 +1035,7 @@ export default function GitHub() {
           .github-top-grid { grid-template-columns: 1fr !important; }
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .repos-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .donut-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 560px) {
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
