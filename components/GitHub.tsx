@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -12,7 +12,7 @@ import { fadeUp, staggerContainer, staggerItem, viewport } from '@/lib/animation
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Types ────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────
 interface GitHubUser {
     login: string;
     name: string;
@@ -24,15 +24,21 @@ interface GitHubUser {
     html_url: string;
 }
 
-interface Repo {
-    id: number;
+interface PinnedRepo {
     name: string;
     description: string;
-    html_url: string;
-    stargazers_count: number;
-    forks_count: number;
-    language: string;
-    topics: string[];
+    url: string;
+    stars: number;
+    forks: number;
+    primaryLanguage: { name: string; color: string } | null;
+    languages: { name: string; color: string; size: number }[];
+    pushedAt: string;
+}
+
+interface Language {
+    name: string;
+    color: string;
+    percentage: number;
 }
 
 interface ContribDay {
@@ -49,30 +55,27 @@ interface Stats {
     averageDaily: number;
 }
 
-// ── Language colors ──────────────────────────────────
-const langColors: Record<string, string> = {
-    JavaScript: '#f7df1e',
-    TypeScript: '#3178c6',
-    Python: '#3572A5',
-    HTML: '#e34c26',
-    CSS: '#563d7c',
-    Java: '#b07219',
-    'C++': '#f34b7d',
-    Go: '#00add8',
-    Rust: '#dea584',
-    default: '#7C3AED',
-};
-
-// ── Heatmap cell color ────────────────────────────────
+// ── Heatmap cell color — gradient purple → cyan ───
 function getCellColor(count: number): string {
     if (count === 0) return 'rgba(255,255,255,0.04)';
-    if (count <= 2) return 'rgba(124,58,237,0.3)';
-    if (count <= 5) return 'rgba(124,58,237,0.55)';
-    if (count <= 9) return 'rgba(124,58,237,0.8)';
-    return 'rgba(124,58,237,1)';
+    if (count <= 2) return 'rgba(124,58,237,0.4)';
+    if (count <= 5) return 'rgba(90,100,237,0.65)';
+    if (count <= 9) return 'rgba(30,160,237,0.85)';
+    return 'rgba(6,182,212,1)';
 }
 
-// ── Skeleton loader ───────────────────────────────────
+// ── Relative time ─────────────────────────────────
+function timeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 30) return `${days}d ago`;
+    if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+    return `${Math.floor(days / 365)}y ago`;
+}
+
+// ── Skeleton ──────────────────────────────────────
 function Skeleton({ w = '100%', h = '16px', radius = '6px' }: {
     w?: string; h?: string; radius?: string;
 }) {
@@ -86,32 +89,143 @@ function Skeleton({ w = '100%', h = '16px', radius = '6px' }: {
     );
 }
 
+// ── Donut chart ───────────────────────────────────
+function DonutChart({ languages }: { languages: Language[] }) {
+    const size = 160;
+    const strokeWidth = 18;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+
+    let offset = 0;
+    const segments = languages.slice(0, 6).map((lang) => {
+        const dash = (lang.percentage / 100) * circumference;
+        const gap = circumference - dash;
+        const seg = { ...lang, dash, gap, offset };
+        offset += dash;
+        return seg;
+    });
+
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap' }}>
+            {/* Donut */}
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+                <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+                    {/* Track */}
+                    <circle
+                        cx={size / 2} cy={size / 2} r={radius}
+                        fill="none"
+                        stroke="rgba(255,255,255,0.04)"
+                        strokeWidth={strokeWidth}
+                    />
+                    {segments.map((seg, i) => (
+                        <motion.circle
+                            key={seg.name}
+                            cx={size / 2} cy={size / 2} r={radius}
+                            fill="none"
+                            stroke={seg.color}
+                            strokeWidth={strokeWidth}
+                            strokeDasharray={`${seg.dash} ${seg.gap}`}
+                            strokeDashoffset={-seg.offset}
+                            strokeLinecap="round"
+                            initial={{ strokeDasharray: `0 ${circumference}` }}
+                            animate={{ strokeDasharray: `${seg.dash} ${seg.gap}` }}
+                            transition={{ duration: 1, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                    ))}
+                </svg>
+                {/* Center label */}
+                <div style={{
+                    position: 'absolute', inset: 0,
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center',
+                }}>
+                    <div style={{
+                        fontFamily: 'var(--font-space)',
+                        fontSize: '1.1rem', fontWeight: 800,
+                        color: 'var(--text-primary)',
+                    }}>
+                        {languages.length}
+                    </div>
+                    <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                        LANGS
+                    </div>
+                </div>
+            </div>
+
+            {/* Legend */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                {languages.slice(0, 6).map((lang) => (
+                    <div key={lang.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{
+                            width: '8px', height: '8px', borderRadius: '50%',
+                            background: lang.color, flexShrink: 0,
+                        }} />
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', flex: 1 }}>
+                            {lang.name}
+                        </span>
+                        {/* Mini bar */}
+                        <div style={{
+                            width: '60px', height: '4px',
+                            background: 'rgba(255,255,255,0.06)',
+                            borderRadius: '4px', overflow: 'hidden',
+                        }}>
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${lang.percentage}%` }}
+                                transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                                style={{
+                                    height: '100%',
+                                    background: lang.color,
+                                    borderRadius: '4px',
+                                }}
+                            />
+                        </div>
+                        <span style={{
+                            fontSize: '0.7rem', fontWeight: 700,
+                            color: 'var(--text-muted)', minWidth: '28px',
+                            textAlign: 'right',
+                        }}>
+                            {lang.percentage}%
+                        </span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function GitHub() {
     const [user, setUser] = useState<GitHubUser | null>(null);
-    const [repos, setRepos] = useState<Repo[]>([]);
+    const [pinned, setPinned] = useState<PinnedRepo[]>([]);
+    const [languages, setLanguages] = useState<Language[]>([]);
     const [weeks, setWeeks] = useState<ContribDay[][]>([]);
     const [stats, setStats] = useState<Stats | null>(null);
-    const [tooltip, setTooltip] = useState<{ x: number; y: number; date: string; count: number } | null>(null);
+    const [tooltip, setTooltip] = useState<{
+        x: number; y: number; date: string; count: number;
+    } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const sectionRef = useRef<HTMLElement>(null);
+    const counterRefs = useRef<HTMLDivElement[]>([]);
 
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const [userRes, reposRes, contribRes] = await Promise.all([
+                const [userRes, pinnedRes, contribRes] = await Promise.all([
                     fetch('/api/github/user'),
-                    fetch('/api/github/repos'),
+                    fetch('/api/github/pinned'),
                     fetch('/api/github/contributions'),
                 ]);
 
                 const userData = await userRes.json();
-                const reposData = await reposRes.json();
+                const pinnedData = await pinnedRes.json();
                 const contribData = await contribRes.json();
 
                 if (userData.error) throw new Error(userData.error);
 
                 setUser(userData);
-                setRepos(Array.isArray(reposData) ? reposData : []);
+                setPinned(pinnedData.pinned || []);
+                setLanguages(pinnedData.languages || []);
                 setWeeks(contribData.weeks || []);
                 setStats(contribData.stats || null);
             } catch (err: any) {
@@ -120,40 +234,52 @@ export default function GitHub() {
                 setLoading(false);
             }
         };
-
         fetchAll();
     }, []);
 
-    // Galaxy particle effect via GSAP
+    // GSAP — galaxy particles + counter animation
     useEffect(() => {
         if (loading || error) return;
         const ctx = gsap.context(() => {
+
+            // Floating particles
             gsap.utils.toArray<HTMLElement>('.galaxy-particle').forEach((el) => {
                 gsap.to(el, {
                     x: gsap.utils.random(-30, 30),
                     y: gsap.utils.random(-30, 30),
                     opacity: gsap.utils.random(0.3, 1),
                     duration: gsap.utils.random(3, 6),
-                    repeat: -1,
-                    yoyo: true,
+                    repeat: -1, yoyo: true,
                     ease: 'sine.inOut',
                     delay: gsap.utils.random(0, 3),
                 });
             });
-        });
+
+            // Animated stat counters
+            counterRefs.current.forEach((el) => {
+                if (!el) return;
+                const target = parseInt(el.dataset.target || '0');
+                gsap.fromTo(
+                    el,
+                    { innerText: 0 },
+                    {
+                        innerText: target,
+                        duration: 2,
+                        ease: 'power2.out',
+                        snap: { innerText: 1 },
+                        scrollTrigger: { trigger: el, start: 'top 85%' },
+                        onUpdate: function () {
+                            el.innerText = Math.round(
+                                parseFloat(el.innerText)
+                            ).toString() + (el.dataset.suffix || '');
+                        },
+                    }
+                );
+            });
+
+        }, sectionRef);
         return () => ctx.revert();
     }, [loading, error]);
-
-    const statCards = stats
-        ? [
-            { label: 'Contributions', value: stats.totalCommits, icon: FaCode, color: 'var(--accent-purple)' },
-            { label: 'Current Streak', value: `${stats.currentStreak}d`, icon: FaFire, color: '#f97316' },
-            { label: 'Longest Streak', value: `${stats.longestStreak}d`, icon: FaStar, color: 'var(--accent-cyan)' },
-            { label: 'Public Repos', value: stats.publicRepos, icon: FaCodeBranch, color: 'var(--accent-magenta)' },
-            { label: 'Followers', value: stats.followers, icon: FaUsers, color: '#22c55e' },
-            { label: 'Daily Avg', value: stats.averageDaily, icon: FaGithub, color: 'var(--accent-purple-light)' },
-        ]
-        : [];
 
     // Month labels for heatmap
     const monthLabels = (() => {
@@ -173,9 +299,21 @@ export default function GitHub() {
         return labels;
     })();
 
+    const statCards = stats
+        ? [
+            { label: 'Contributions', value: stats.totalCommits, suffix: '', icon: FaCode, color: 'var(--accent-purple)' },
+            { label: 'Current Streak', value: stats.currentStreak, suffix: 'd', icon: FaFire, color: '#f97316' },
+            { label: 'Longest Streak', value: stats.longestStreak, suffix: 'd', icon: FaStar, color: 'var(--accent-cyan)' },
+            { label: 'Public Repos', value: stats.publicRepos, suffix: '', icon: FaCodeBranch, color: 'var(--accent-magenta)' },
+            { label: 'Followers', value: stats.followers, suffix: '', icon: FaUsers, color: '#22c55e' },
+            { label: 'Daily Avg', value: stats.averageDaily, suffix: '', icon: FaGithub, color: 'var(--accent-purple-light)' },
+        ]
+        : [];
+
     return (
         <section
             id="github"
+            ref={sectionRef}
             style={{
                 padding: '120px 24px',
                 background: 'var(--bg-secondary)',
@@ -183,7 +321,7 @@ export default function GitHub() {
                 overflow: 'hidden',
             }}
         >
-            {/* Galaxy background particles */}
+            {/* Galaxy particles */}
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
                 {Array.from({ length: 40 }).map((_, i) => (
                     <div
@@ -205,7 +343,6 @@ export default function GitHub() {
                         }}
                     />
                 ))}
-                {/* Glow orbs */}
                 <div style={{
                     position: 'absolute', top: '20%', left: '10%',
                     width: '400px', height: '400px',
@@ -255,10 +392,10 @@ export default function GitHub() {
                     </div>
                 )}
 
-                {/* ── Profile card + stats ───────────────────── */}
+                {/* ── Profile + Stats ───────────────────────── */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '300px 1fr',
+                    gridTemplateColumns: '280px 1fr',
                     gap: '24px',
                     marginBottom: '24px',
                     alignItems: 'start',
@@ -288,12 +425,9 @@ export default function GitHub() {
                                 <Skeleton w="80px" h="80px" radius="50%" />
                                 <Skeleton w="120px" h="20px" />
                                 <Skeleton w="180px" h="14px" />
-                                <Skeleton w="100%" h="14px" />
-                                <Skeleton w="80%" h="14px" />
                             </>
                         ) : user ? (
                             <>
-                                {/* Avatar with glow */}
                                 <div style={{ position: 'relative' }}>
                                     <div style={{
                                         position: 'absolute', inset: '-3px',
@@ -317,8 +451,7 @@ export default function GitHub() {
                                 <div>
                                     <div style={{
                                         fontFamily: 'var(--font-space)',
-                                        fontSize: '1.1rem',
-                                        fontWeight: 700,
+                                        fontSize: '1.1rem', fontWeight: 700,
                                         color: 'var(--text-primary)',
                                     }}>
                                         {user.name || user.login}
@@ -347,7 +480,6 @@ export default function GitHub() {
                                     gridTemplateColumns: '1fr 1fr 1fr',
                                     gap: '8px',
                                     width: '100%',
-                                    marginTop: '4px',
                                 }}>
                                     {[
                                         { label: 'Repos', value: user.public_repos },
@@ -362,8 +494,7 @@ export default function GitHub() {
                                         }}>
                                             <div style={{
                                                 fontFamily: 'var(--font-space)',
-                                                fontSize: '1rem',
-                                                fontWeight: 700,
+                                                fontSize: '1rem', fontWeight: 700,
                                                 color: 'var(--text-primary)',
                                             }}>
                                                 {value}
@@ -377,24 +508,17 @@ export default function GitHub() {
 
                                 <motion.a
                                     href={user.html_url}
-                                    target="_blank"
-                                    rel="noreferrer"
+                                    target="_blank" rel="noreferrer"
                                     whileHover={{ scale: 1.04 }}
                                     whileTap={{ scale: 0.97 }}
                                     style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '7px',
-                                        width: '100%',
-                                        justifyContent: 'center',
+                                        display: 'inline-flex', alignItems: 'center', gap: '7px',
+                                        width: '100%', justifyContent: 'center',
                                         padding: '10px',
                                         background: 'var(--accent-purple)',
-                                        color: '#fff',
-                                        borderRadius: '10px',
-                                        fontSize: '0.82rem',
-                                        fontWeight: 600,
-                                        textDecoration: 'none',
-                                        marginTop: '4px',
+                                        color: '#fff', borderRadius: '10px',
+                                        fontSize: '0.82rem', fontWeight: 600,
+                                        textDecoration: 'none', marginTop: '4px',
                                     }}
                                 >
                                     <FaGithub /> View Profile
@@ -403,7 +527,7 @@ export default function GitHub() {
                         ) : null}
                     </motion.div>
 
-                    {/* Stats grid */}
+                    {/* Stat cards */}
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
@@ -419,58 +543,49 @@ export default function GitHub() {
                         {loading
                             ? Array.from({ length: 6 }).map((_, i) => (
                                 <div key={i} style={{
-                                    padding: '20px',
-                                    background: 'var(--bg-card)',
-                                    border: '1px solid var(--border)',
-                                    borderRadius: '14px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
+                                    padding: '20px', background: 'var(--bg-card)',
+                                    border: '1px solid var(--border)', borderRadius: '14px',
+                                    display: 'flex', flexDirection: 'column', gap: '8px',
                                 }}>
                                     <Skeleton w="32px" h="32px" radius="8px" />
                                     <Skeleton w="60px" h="24px" />
                                     <Skeleton w="80px" h="12px" />
                                 </div>
                             ))
-                            : statCards.map(({ label, value, icon: Icon, color }) => (
+                            : statCards.map(({ label, value, suffix, icon: Icon, color }, idx) => (
                                 <motion.div
                                     key={label}
                                     variants={staggerItem}
                                     whileHover={{ y: -3, borderColor: `${color}44` }}
                                     style={{
-                                        padding: '20px',
-                                        background: 'var(--bg-card)',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: '14px',
+                                        padding: '20px', background: 'var(--bg-card)',
+                                        border: '1px solid var(--border)', borderRadius: '14px',
                                         transition: 'all 0.2s ease',
                                     }}
                                 >
                                     <div style={{
-                                        width: '36px', height: '36px',
-                                        borderRadius: '9px',
+                                        width: '36px', height: '36px', borderRadius: '9px',
                                         background: `${color}18`,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color,
-                                        fontSize: '1rem',
-                                        marginBottom: '10px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        color, fontSize: '1rem', marginBottom: '10px',
                                     }}>
                                         <Icon />
                                     </div>
-                                    <div style={{
-                                        fontFamily: 'var(--font-space)',
-                                        fontSize: '1.5rem',
-                                        fontWeight: 800,
-                                        color: 'var(--text-primary)',
-                                        lineHeight: 1,
-                                    }}>
-                                        {value}
+                                    {/* Animated counter */}
+                                    <div
+                                        ref={(el) => { if (el) counterRefs.current[idx] = el; }}
+                                        data-target={value}
+                                        data-suffix={suffix}
+                                        style={{
+                                            fontFamily: 'var(--font-space)',
+                                            fontSize: '1.5rem', fontWeight: 800,
+                                            color: 'var(--text-primary)', lineHeight: 1,
+                                        }}
+                                    >
+                                        0{suffix}
                                     </div>
                                     <div style={{
-                                        fontSize: '0.75rem',
-                                        color: 'var(--text-muted)',
-                                        marginTop: '4px',
+                                        fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px',
                                     }}>
                                         {label}
                                     </div>
@@ -479,7 +594,47 @@ export default function GitHub() {
                     </motion.div>
                 </div>
 
-                {/* ── Contribution heatmap ───────────────────── */}
+                {/* ── Language breakdown ────────────────────── */}
+                <motion.div
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={viewport}
+                    style={{
+                        padding: '28px 32px',
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '20px',
+                        marginBottom: '24px',
+                    }}
+                >
+                    <h3 style={{
+                        fontFamily: 'var(--font-space)',
+                        fontSize: '0.95rem', fontWeight: 700,
+                        color: 'var(--text-primary)', marginBottom: '24px',
+                    }}>
+                        Language breakdown — across all repos
+                    </h3>
+
+                    {loading ? (
+                        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+                            <Skeleton w="160px" h="160px" radius="50%" />
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Skeleton key={i} w="100%" h="14px" />
+                                ))}
+                            </div>
+                        </div>
+                    ) : languages.length > 0 ? (
+                        <DonutChart languages={languages} />
+                    ) : (
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                            No language data available.
+                        </p>
+                    )}
+                </motion.div>
+
+                {/* ── Contribution heatmap ──────────────────── */}
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
@@ -499,23 +654,24 @@ export default function GitHub() {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         marginBottom: '20px',
-                        flexWrap: 'wrap',
-                        gap: '8px',
+                        flexWrap: 'wrap', gap: '8px',
                     }}>
                         <h3 style={{
                             fontFamily: 'var(--font-space)',
-                            fontSize: '0.95rem',
-                            fontWeight: 700,
+                            fontSize: '0.95rem', fontWeight: 700,
                             color: 'var(--text-primary)',
                         }}>
                             Contribution activity — last 12 months
                         </h3>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                        {/* Gradient legend */}
+                        <div style={{
+                            display: 'flex', alignItems: 'center',
+                            gap: '6px', fontSize: '0.72rem', color: 'var(--text-muted)',
+                        }}>
                             Less
                             {[0, 2, 5, 9, 12].map((c) => (
                                 <div key={c} style={{
-                                    width: '11px', height: '11px',
-                                    borderRadius: '2px',
+                                    width: '11px', height: '11px', borderRadius: '2px',
                                     background: getCellColor(c),
                                     border: '1px solid rgba(255,255,255,0.06)',
                                 }} />
@@ -538,9 +694,7 @@ export default function GitHub() {
                             <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: `repeat(${weeks.length}, 13px)`,
-                                gap: '2px',
-                                marginBottom: '4px',
-                                paddingLeft: '0',
+                                gap: '2px', marginBottom: '4px',
                             }}>
                                 {weeks.map((_, i) => {
                                     const label = monthLabels.find((m) => m.col === i);
@@ -548,8 +702,7 @@ export default function GitHub() {
                                         <div key={i} style={{
                                             fontSize: '0.6rem',
                                             color: label ? 'var(--text-muted)' : 'transparent',
-                                            whiteSpace: 'nowrap',
-                                            userSelect: 'none',
+                                            whiteSpace: 'nowrap', userSelect: 'none',
                                         }}>
                                             {label?.label || '.'}
                                         </div>
@@ -557,21 +710,18 @@ export default function GitHub() {
                                 })}
                             </div>
 
-                            {/* Grid */}
                             <div style={{ display: 'flex', gap: '2px' }}>
                                 {/* Day labels */}
                                 <div style={{
                                     display: 'grid',
                                     gridTemplateRows: 'repeat(7, 13px)',
-                                    gap: '2px',
-                                    marginRight: '4px',
+                                    gap: '2px', marginRight: '4px',
                                 }}>
                                     {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((d, i) => (
                                         <div key={i} style={{
                                             fontSize: '0.6rem',
                                             color: d ? 'var(--text-muted)' : 'transparent',
-                                            lineHeight: '13px',
-                                            textAlign: 'right',
+                                            lineHeight: '13px', textAlign: 'right',
                                             userSelect: 'none',
                                         }}>
                                             {d || '.'}
@@ -602,8 +752,7 @@ export default function GitHub() {
                                                 }}
                                                 onMouseLeave={() => setTooltip(null)}
                                                 style={{
-                                                    width: '13px',
-                                                    height: '13px',
+                                                    width: '13px', height: '13px',
                                                     borderRadius: '2px',
                                                     background: getCellColor(day.count),
                                                     border: '1px solid rgba(255,255,255,0.04)',
@@ -630,16 +779,13 @@ export default function GitHub() {
                     {tooltip && (
                         <div style={{
                             position: 'fixed',
-                            left: tooltip.x,
-                            top: tooltip.y,
+                            left: tooltip.x, top: tooltip.y,
                             background: 'var(--bg-primary)',
                             border: '1px solid var(--border)',
                             borderRadius: '8px',
                             padding: '6px 12px',
-                            fontSize: '0.75rem',
-                            color: 'var(--text-primary)',
-                            pointerEvents: 'none',
-                            zIndex: 500,
+                            fontSize: '0.75rem', color: 'var(--text-primary)',
+                            pointerEvents: 'none', zIndex: 500,
                             whiteSpace: 'nowrap',
                             boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                         }}>
@@ -653,7 +799,7 @@ export default function GitHub() {
                     )}
                 </motion.div>
 
-                {/* ── Recent repos ───────────────────────────── */}
+                {/* ── Pinned repos ──────────────────────────── */}
                 <motion.div
                     variants={staggerContainer}
                     initial="hidden"
@@ -662,12 +808,10 @@ export default function GitHub() {
                 >
                     <h3 style={{
                         fontFamily: 'var(--font-space)',
-                        fontSize: '0.95rem',
-                        fontWeight: 700,
-                        color: 'var(--text-primary)',
-                        marginBottom: '16px',
+                        fontSize: '0.95rem', fontWeight: 700,
+                        color: 'var(--text-primary)', marginBottom: '16px',
                     }}>
-                        Recent repositories
+                        Pinned repositories
                     </h3>
 
                     <div style={{
@@ -680,51 +824,36 @@ export default function GitHub() {
                         {loading
                             ? Array.from({ length: 6 }).map((_, i) => (
                                 <div key={i} style={{
-                                    padding: '20px',
-                                    background: 'var(--bg-card)',
-                                    border: '1px solid var(--border)',
-                                    borderRadius: '14px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '8px',
+                                    padding: '20px', background: 'var(--bg-card)',
+                                    border: '1px solid var(--border)', borderRadius: '14px',
+                                    display: 'flex', flexDirection: 'column', gap: '8px',
                                 }}>
                                     <Skeleton w="60%" h="16px" />
                                     <Skeleton w="90%" h="12px" />
                                     <Skeleton w="70%" h="12px" />
                                 </div>
                             ))
-                            : repos.slice(0, 6).map((repo) => (
+                            : (pinned.length > 0 ? pinned : []).map((repo) => (
                                 <motion.a
-                                    key={repo.id}
-                                    href={repo.html_url}
-                                    target="_blank"
-                                    rel="noreferrer"
+                                    key={repo.name}
+                                    href={repo.url}
+                                    target="_blank" rel="noreferrer"
                                     variants={staggerItem}
                                     whileHover={{ y: -3, borderColor: 'rgba(124,58,237,0.35)' }}
                                     style={{
-                                        padding: '20px',
-                                        background: 'var(--bg-card)',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: '14px',
+                                        padding: '20px', background: 'var(--bg-card)',
+                                        border: '1px solid var(--border)', borderRadius: '14px',
                                         textDecoration: 'none',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '8px',
+                                        display: 'flex', flexDirection: 'column', gap: '8px',
                                         transition: 'all 0.2s ease',
                                     }}
                                 >
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                    }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <FaGithub style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                                         <span style={{
-                                            fontSize: '0.875rem',
-                                            fontWeight: 700,
+                                            fontSize: '0.875rem', fontWeight: 700,
                                             color: 'var(--accent-purple-light)',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
+                                            overflow: 'hidden', textOverflow: 'ellipsis',
                                             whiteSpace: 'nowrap',
                                         }}>
                                             {repo.name}
@@ -732,54 +861,81 @@ export default function GitHub() {
                                     </div>
 
                                     <p style={{
-                                        fontSize: '0.78rem',
-                                        color: 'var(--text-muted)',
+                                        fontSize: '0.78rem', color: 'var(--text-muted)',
                                         lineHeight: 1.5,
                                         display: '-webkit-box',
                                         WebkitLineClamp: 2,
                                         WebkitBoxOrient: 'vertical',
-                                        overflow: 'hidden',
-                                        flex: 1,
+                                        overflow: 'hidden', flex: 1,
                                     }}>
                                         {repo.description || 'No description provided.'}
                                     </p>
 
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '12px',
-                                        marginTop: 'auto',
-                                    }}>
-                                        {repo.language && (
-                                            <span style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '4px',
-                                                fontSize: '0.72rem',
-                                                color: 'var(--text-muted)',
+                                    {/* Multi-language bar */}
+                                    {repo.languages.length > 0 && (
+                                        <div>
+                                            <div style={{
+                                                display: 'flex', height: '4px',
+                                                borderRadius: '4px', overflow: 'hidden',
+                                                gap: '1px', marginBottom: '6px',
                                             }}>
-                                                <span style={{
-                                                    width: '8px', height: '8px',
-                                                    borderRadius: '50%',
-                                                    background: langColors[repo.language] || langColors.default,
-                                                    flexShrink: 0,
-                                                }} />
-                                                {repo.language}
-                                            </span>
-                                        )}
+                                                {repo.languages.map((lang) => {
+                                                    const total = repo.languages.reduce((s, l) => s + l.size, 0);
+                                                    const pct = (lang.size / total) * 100;
+                                                    return (
+                                                        <div
+                                                            key={lang.name}
+                                                            style={{
+                                                                width: `${pct}%`,
+                                                                background: lang.color,
+                                                                borderRadius: '4px',
+                                                            }}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                {repo.languages.slice(0, 3).map((lang) => (
+                                                    <span key={lang.name} style={{
+                                                        display: 'flex', alignItems: 'center', gap: '3px',
+                                                        fontSize: '0.65rem', color: 'var(--text-muted)',
+                                                    }}>
+                                                        <span style={{
+                                                            width: '6px', height: '6px',
+                                                            borderRadius: '50%', background: lang.color,
+                                                        }} />
+                                                        {lang.name}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div style={{
+                                        display: 'flex', alignItems: 'center',
+                                        gap: '12px', marginTop: 'auto',
+                                        paddingTop: '8px',
+                                        borderTop: '1px solid var(--border)',
+                                    }}>
                                         <span style={{
                                             display: 'flex', alignItems: 'center', gap: '3px',
                                             fontSize: '0.72rem', color: 'var(--text-muted)',
                                         }}>
                                             <FaStar style={{ color: '#f59e0b', fontSize: '0.65rem' }} />
-                                            {repo.stargazers_count}
+                                            {repo.stars}
                                         </span>
                                         <span style={{
                                             display: 'flex', alignItems: 'center', gap: '3px',
                                             fontSize: '0.72rem', color: 'var(--text-muted)',
                                         }}>
                                             <FaCodeBranch style={{ fontSize: '0.65rem' }} />
-                                            {repo.forks_count}
+                                            {repo.forks}
+                                        </span>
+                                        <span style={{
+                                            fontSize: '0.65rem', color: 'var(--text-muted)',
+                                            marginLeft: 'auto',
+                                        }}>
+                                            {timeAgo(repo.pushedAt)}
                                         </span>
                                     </div>
                                 </motion.a>
