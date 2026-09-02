@@ -1,11 +1,16 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef, useEffect } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { FaCode, FaHeart, FaRocket, FaCoffee } from 'react-icons/fa';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
     fadeUp, fadeLeft, fadeRight,
-    staggerContainer, staggerItem, viewport
+    staggerContainer, staggerItem, viewport,
 } from '@/lib/animations';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const highlights = [
     {
@@ -32,33 +37,125 @@ const highlights = [
 
 const facts = [
     { label: 'Based in', value: 'Chattogram, Bangladesh' },
-    { label: 'Education', value: 'BSc in CSE (Graduated)' },
+    { label: 'Education', value: 'BSc in CSE (ongoing)' },
     { label: 'Focus', value: 'Full Stack Web Development' },
-    { label: 'Hobbies', value: 'Coding, Football, Chess' },
+    { label: 'Hobbies', value: 'Coding, Gaming, Chess' },
     { label: 'Languages', value: 'Bengali, English' },
     { label: 'Status', value: '🟢 Open to work' },
 ];
 
+// Floating badge component
+function FloatingBadge({
+    children,
+    style,
+    delay = 0,
+    amplitude = 8,
+}: {
+    children: React.ReactNode;
+    style: React.CSSProperties;
+    delay?: number;
+    amplitude?: number;
+}) {
+    return (
+        <motion.div
+            animate={{ y: [0, -amplitude, 0] }}
+            transition={{
+                duration: 3 + delay,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay,
+            }}
+            style={{
+                position: 'absolute',
+                background: 'rgba(16,16,28,0.85)',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                padding: '10px 14px',
+                backdropFilter: 'blur(12px)',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                whiteSpace: 'nowrap',
+                zIndex: 3,
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                ...style,
+            }}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
 export default function About() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const imageRef = useRef<HTMLDivElement>(null);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    // Smooth spring for 3D tilt
+    const springConfig = { stiffness: 120, damping: 20 };
+    const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), springConfig);
+    const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig);
+
+    // GSAP scroll animation for image
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.fromTo(imageRef.current,
+                { opacity: 0, y: 60, scale: 0.95 },
+                {
+                    opacity: 1, y: 0, scale: 1,
+                    duration: 1, ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: imageRef.current,
+                        start: 'top 80%',
+                    },
+                }
+            );
+
+            // Floating orb behind image
+            gsap.to('.about-orb', {
+                scale: 1.2,
+                opacity: 0.8,
+                duration: 3,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+            });
+        }, sectionRef);
+        return () => ctx.revert();
+    }, []);
+
+    // Mouse move handler for 3D tilt
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        mouseX.set(x);
+        mouseY.set(y);
+    };
+
+    const handleMouseLeave = () => {
+        mouseX.set(0);
+        mouseY.set(0);
+    };
+
     return (
         <section
             id="about"
+            ref={sectionRef}
             style={{
                 padding: '120px 24px',
                 position: 'relative',
                 overflow: 'hidden',
             }}
         >
-            {/* Subtle background accent */}
+            {/* Background accent */}
             <div style={{
                 position: 'absolute',
-                top: '50%',
-                right: '-100px',
-                width: '400px',
-                height: '400px',
+                top: '50%', right: '-100px',
+                width: '400px', height: '400px',
                 background: 'radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(40px)',
+                borderRadius: '50%', filter: 'blur(40px)',
                 pointerEvents: 'none',
             }} />
 
@@ -82,198 +179,285 @@ export default function About() {
                     </p>
                 </motion.div>
 
-                {/* Main two-column layout */}
+                {/* Main layout — text left, photo right */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateColumns: '1fr 380px',
                     gap: '64px',
                     alignItems: 'start',
-                    marginBottom: '80px',
                 }}
-                    className="about-grid"
+                    className="about-main-grid"
                 >
-                    {/* Left — Story */}
-                    <motion.div
-                        variants={fadeLeft}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={viewport}
-                    >
-                        <h3 style={{
-                            fontFamily: 'var(--font-space)',
-                            fontSize: '1.5rem',
-                            fontWeight: 600,
-                            marginBottom: '20px',
-                            color: 'var(--text-primary)',
-                        }}>
-                            My journey into development
-                        </h3>
+                    {/* Left — text content */}
+                    <div>
+                        <motion.div
+                            variants={fadeLeft}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={viewport}
+                        >
+                            <h3 style={{
+                                fontFamily: 'var(--font-space)',
+                                fontSize: '1.5rem', fontWeight: 600,
+                                marginBottom: '20px', color: 'var(--text-primary)',
+                            }}>
+                                My journey into development
+                            </h3>
 
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                            color: 'var(--text-muted)',
-                            lineHeight: 1.8,
-                            fontSize: '0.97rem',
-                        }}>
-                            <p>
-                                It started with pure curiosity. I just wanted to see how websites actually worked under the hood. What began as messing around with basic HTML quickly spiraled into a deep dive through JavaScript, then React, and eventually the full MERN stack.
-                            </p>
-                            <p>
-                                I recently graduated with a CSE degree from BGC Trust University, Bangladesh. While school gave me the fundamentals, the real learning happened when I was building hands-on projects, which usually involved breaking things and then spending hours figuring out why.
-                            </p>
-                            <p>
-                                I’ve always gravitated toward building things with a purpose, like platforms where real people log in, manage data, and actually come back the next day. I'm also a bit obsessive over the details, whether it's a micro-animation that makes a button click feel satisfying, a proper loading state, or an error message that actually makes sense to a human.
-                            </p>
-                            <p>
-                                When I’m not staring at a code editor, I’m usually playing chess, falling down tech YouTube rabbit holes, or messing around with UI concepts that will probably never see the light of day.
-                            </p>
-                        </div>
+                            <div style={{
+                                display: 'flex', flexDirection: 'column', gap: '16px',
+                                color: 'var(--text-muted)', lineHeight: 1.8, fontSize: '0.97rem',
+                            }}>
+                                <p>
+                                    It started with curiosity — I wanted to understand how websites actually
+                                    worked under the hood. What began as tweaking HTML quickly turned into
+                                    a deep dive into JavaScript, then React, and eventually the full MERN stack.
+                                </p>
+                                <p>
+                                    I'm currently a CSE student at UITS, Bangladesh, where I balance academic
+                                    learning with hands-on project building. Most of what I know came from
+                                    building real things, breaking them, and figuring out why.
+                                </p>
+                                <p>
+                                    I gravitate toward projects that have a clear impact — platforms where
+                                    real users log in, book things, manage data, and come back the next day.
+                                    I care deeply about the details: the micro-animation that makes an
+                                    interaction feel satisfying, the loading state that keeps users informed,
+                                    the error message that actually helps.
+                                </p>
+                            </div>
 
-                        {/* Quick facts */}
-                        <div style={{
-                            marginTop: '32px',
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '12px',
-                        }}>
-                            {facts.map(({ label, value }) => (
-                                <div
-                                    key={label}
+                            {/* Quick facts */}
+                            <div style={{
+                                marginTop: '32px',
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '12px',
+                            }}
+                                className="facts-grid"
+                            >
+                                {facts.map(({ label, value }) => (
+                                    <motion.div
+                                        key={label}
+                                        whileHover={{ x: 4, borderColor: 'rgba(124,58,237,0.35)' }}
+                                        style={{
+                                            padding: '12px 16px',
+                                            background: 'var(--glass)',
+                                            border: '1px solid var(--border)',
+                                            borderRadius: '10px',
+                                            transition: 'all 0.2s',
+                                        }}
+                                    >
+                                        <div style={{
+                                            fontSize: '0.7rem', color: 'var(--accent-purple-light)',
+                                            fontWeight: 600, letterSpacing: '0.08em',
+                                            textTransform: 'uppercase', marginBottom: '4px',
+                                        }}>
+                                            {label}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500,
+                                        }}>
+                                            {value}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Highlight cards */}
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={viewport}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '16px',
+                                marginTop: '32px',
+                            }}
+                            className="highlights-grid"
+                        >
+                            {highlights.map(({ icon: Icon, title, description }) => (
+                                <motion.div
+                                    key={title}
+                                    variants={staggerItem}
+                                    whileHover={{ y: -4, borderColor: 'rgba(124,58,237,0.4)' }}
                                     style={{
-                                        padding: '12px 16px',
-                                        background: 'var(--glass)',
+                                        padding: '20px',
+                                        background: 'var(--bg-card)',
                                         border: '1px solid var(--border)',
-                                        borderRadius: '10px',
+                                        borderRadius: '14px',
+                                        transition: 'border-color 0.2s',
                                     }}
                                 >
                                     <div style={{
-                                        fontSize: '0.7rem',
-                                        color: 'var(--accent-purple-light)',
-                                        fontWeight: 600,
-                                        letterSpacing: '0.08em',
-                                        textTransform: 'uppercase',
-                                        marginBottom: '4px',
+                                        width: '36px', height: '36px', borderRadius: '9px',
+                                        background: 'rgba(124,58,237,0.12)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        marginBottom: '12px', color: 'var(--accent-purple-light)', fontSize: '1rem',
                                     }}>
-                                        {label}
+                                        <Icon />
                                     </div>
-                                    <div style={{
-                                        fontSize: '0.875rem',
-                                        color: 'var(--text-primary)',
-                                        fontWeight: 500,
+                                    <h4 style={{
+                                        fontSize: '0.9rem', fontWeight: 600,
+                                        color: 'var(--text-primary)', marginBottom: '6px',
                                     }}>
-                                        {value}
-                                    </div>
-                                </div>
+                                        {title}
+                                    </h4>
+                                    <p style={{
+                                        fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6,
+                                    }}>
+                                        {description}
+                                    </p>
+                                </motion.div>
                             ))}
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    </div>
 
-                    {/* Right — Highlights */}
-                    <motion.div
-                        variants={staggerContainer}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={viewport}
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '16px',
-                            alignContent: 'start',
-                        }}
+                    {/* Right — animated photo */}
+                    <div
+                        ref={imageRef}
+                        style={{ opacity: 0, position: 'sticky', top: '120px' }}
                     >
-                        {highlights.map(({ icon: Icon, title, description }) => (
-                            <motion.div
-                                key={title}
-                                variants={staggerItem}
-                                whileHover={{ y: -4, borderColor: 'rgba(124,58,237,0.4)' }}
-                                style={{
-                                    padding: '24px',
-                                    background: 'var(--bg-card)',
-                                    border: '1px solid var(--border)',
-                                    borderRadius: '16px',
-                                    transition: 'border-color 0.2s',
-                                }}
-                            >
-                                <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '10px',
-                                    background: 'rgba(124,58,237,0.12)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    marginBottom: '14px',
-                                    color: 'var(--accent-purple-light)',
-                                    fontSize: '1.1rem',
-                                }}>
-                                    <Icon />
-                                </div>
-                                <h4 style={{
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    color: 'var(--text-primary)',
-                                    marginBottom: '8px',
-                                }}>
-                                    {title}
-                                </h4>
-                                <p style={{
-                                    fontSize: '0.82rem',
-                                    color: 'var(--text-muted)',
-                                    lineHeight: 1.6,
-                                }}>
-                                    {description}
-                                </p>
-                            </motion.div>
-                        ))}
-
-                        {/* What I'm currently working on */}
                         <motion.div
-                            variants={staggerItem}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
                             style={{
-                                gridColumn: '1 / -1',
-                                padding: '24px',
-                                background: 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.06))',
-                                border: '1px solid rgba(124,58,237,0.2)',
-                                borderRadius: '16px',
+                                rotateX,
+                                rotateY,
+                                transformPerspective: 800,
+                                transformStyle: 'preserve-3d',
+                                position: 'relative',
                             }}
                         >
+                            {/* Glow orb behind image */}
+                            <div
+                                className="about-orb"
+                                style={{
+                                    position: 'absolute',
+                                    inset: '-20px',
+                                    borderRadius: '50%',
+                                    background: 'radial-gradient(circle, rgba(124,58,237,0.2) 0%, rgba(6,182,212,0.1) 50%, transparent 70%)',
+                                    filter: 'blur(20px)',
+                                    zIndex: 0,
+                                    pointerEvents: 'none',
+                                }}
+                            />
+
+                            {/* Image container */}
                             <div style={{
-                                fontSize: '0.75rem',
-                                fontWeight: 600,
-                                letterSpacing: '0.1em',
-                                textTransform: 'uppercase',
-                                color: 'var(--accent-cyan)',
-                                marginBottom: '8px',
+                                position: 'relative',
+                                zIndex: 1,
+                                borderRadius: '24px',
+                                overflow: 'hidden',
+                                background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(6,182,212,0.05))',
+                                border: '1px solid rgba(124,58,237,0.2)',
+                                boxShadow: '0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(124,58,237,0.1)',
                             }}>
-                                Currently building
+                                <img
+                                    src="/images/profile.png"
+                                    alt="Mushfiq — Full Stack Developer"
+                                    style={{
+                                        width: '100%',
+                                        height: 'auto',
+                                        display: 'block',
+                                        objectFit: 'cover',
+                                    }}
+                                />
+
+                                {/* Overlay gradient at bottom */}
+                                <div style={{
+                                    position: 'absolute', bottom: 0, left: 0, right: 0,
+                                    height: '40%',
+                                    background: 'linear-gradient(to top, rgba(10,10,15,0.6), transparent)',
+                                    pointerEvents: 'none',
+                                }} />
                             </div>
-                            <div style={{
-                                fontSize: '1rem',
-                                fontWeight: 600,
-                                color: 'var(--text-primary)',
-                                marginBottom: '4px',
-                            }}>
-                                English Janala — Next.js Learning Platform
-                            </div>
-                            <div style={{
-                                fontSize: '0.85rem',
-                                color: 'var(--text-muted)',
-                            }}>
-                                Firebase Auth · Tailwind CSS v4 · Next.js 15 · localStorage
-                            </div>
+
+                            {/* Floating badge — top left */}
+                            <FloatingBadge
+                                delay={0}
+                                amplitude={6}
+                                style={{ top: '-16px', left: '-20px' }}
+                            >
+                                <span style={{ color: '#22c55e', marginRight: '6px' }}>⚡</span>
+                                Open to work
+                            </FloatingBadge>
+
+                            {/* Floating badge — bottom right */}
+                            <FloatingBadge
+                                delay={1}
+                                amplitude={10}
+                                style={{ bottom: '24px', right: '-24px' }}
+                            >
+                                <span style={{ marginRight: '6px' }}>🚀</span>
+                                Full Stack Dev
+                            </FloatingBadge>
+
+                            {/* Floating badge — bottom left */}
+                            <FloatingBadge
+                                delay={0.5}
+                                amplitude={7}
+                                style={{ bottom: '-16px', left: '-16px' }}
+                            >
+                                <span style={{ color: 'var(--accent-cyan)', marginRight: '6px' }}>💻</span>
+                                MERN Stack
+                            </FloatingBadge>
+
+                            {/* Floating skill dots — decorative */}
+                            {['React', 'Next.js', 'Node'].map((tech, i) => (
+                                <motion.div
+                                    key={tech}
+                                    animate={{
+                                        y: [0, -8, 0],
+                                        opacity: [0.6, 1, 0.6],
+                                    }}
+                                    transition={{
+                                        duration: 2.5 + i * 0.5,
+                                        repeat: Infinity,
+                                        ease: 'easeInOut',
+                                        delay: i * 0.8,
+                                    }}
+                                    style={{
+                                        position: 'absolute',
+                                        top: `${20 + i * 25}%`,
+                                        right: '-40px',
+                                        padding: '5px 10px',
+                                        background: 'rgba(124,58,237,0.15)',
+                                        border: '1px solid rgba(124,58,237,0.3)',
+                                        borderRadius: '100px',
+                                        fontSize: '0.65rem',
+                                        fontWeight: 700,
+                                        color: 'var(--accent-purple-light)',
+                                        backdropFilter: 'blur(8px)',
+                                        zIndex: 3,
+                                    }}
+                                >
+                                    {tech}
+                                </motion.div>
+                            ))}
                         </motion.div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
 
             <style>{`
-        @media (max-width: 768px) {
-          .about-grid {
+        @media (max-width: 900px) {
+          .about-main-grid {
             grid-template-columns: 1fr !important;
-            gap: 40px !important;
           }
+          .about-main-grid > div:last-child {
+            position: relative !important;
+            top: 0 !important;
+            max-width: 320px;
+            margin: 0 auto;
+          }
+        }
+        @media (max-width: 560px) {
+          .facts-grid { grid-template-columns: 1fr !important; }
+          .highlights-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
         </section>
