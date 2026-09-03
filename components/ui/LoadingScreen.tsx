@@ -75,30 +75,35 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
                             transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
                             style={{
                                 fontFamily: 'var(--font-space)',
-                                fontSize: 'clamp(60px, 14vw, 180px)',
+                                fontSize: 'clamp(48px, 12vw, 180px)',  // was 14vw, reduced
                                 fontWeight: 900,
                                 letterSpacing: '-0.04em',
                                 color: 'var(--text-primary)',
                                 lineHeight: 1,
                                 textAlign: 'center',
                                 whiteSpace: 'nowrap',
+                                overflow: 'hidden',          // ← add
+                                maxWidth: '100vw',           // ← add
                             }}
                         >
                             Mushfiq
                         </motion.h1>
+
                         <motion.p
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 0.04, y: 0 }}
                             transition={{ duration: 1, delay: 0.4, ease: 'easeOut' }}
                             style={{
                                 fontFamily: 'var(--font-space)',
-                                fontSize: 'clamp(16px, 4vw, 52px)',
+                                fontSize: 'clamp(12px, 3.5vw, 52px)',  // was 4vw, reduced
                                 fontWeight: 700,
-                                letterSpacing: '0.1em',
+                                letterSpacing: '0.08em',               // reduced from 0.1em
                                 textTransform: 'uppercase',
                                 color: 'var(--text-primary)',
                                 textAlign: 'center',
                                 whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                maxWidth: '100vw',
                             }}
                         >
                             Full Stack Developer
