@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa';
 import { fadeUp, viewport } from '@/lib/animations';
 import { FaX } from 'react-icons/fa6';
+import LogoMark from '@/components/ui/LogoMark';
 
 const navLinks = [
     { label: 'About', href: 'about' },
@@ -76,17 +77,23 @@ export default function Footer() {
                                 padding: 0,
                                 marginBottom: '12px',
                                 display: 'block',
+                                cursor: 'none',
                             }}
                         >
-                            <img
-                                src="/images/logo.png"
-                                alt="Mushfiq Logo"
-                                style={{
-                                    height: '48px',
-                                    width: 'auto',
-                                    objectFit: 'contain',
-                                }}
-                            />
+                            <LogoMark size="footer" />
+                            <span style={{
+                                display: 'block',
+                                fontFamily: 'monospace',
+                                fontSize: '0.5rem',
+                                fontWeight: 400,
+                                color: 'var(--text-muted)',
+                                letterSpacing: '0.18em',
+                                textTransform: 'uppercase',
+                                marginTop: '2px',
+                                paddingLeft: '28px',
+                            }}>
+                                full stack developer
+                            </span>
                         </button>
                         <p style={{
                             fontSize: '0.85rem',

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { navbarVariants, fadeIn } from '@/lib/animations';
+import LogoMark from '@/components/ui/LogoMark';
 
 const navItems = [
     { label: 'About', href: 'about' },
@@ -86,25 +87,18 @@ export default function Navbar() {
                 {/* Logo */}
                 <motion.button
                     onClick={() => scrollTo('home')}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileTap={{ scale: 0.97 }}
                     style={{
                         background: 'none',
                         border: 'none',
                         padding: 0,
-                        display: 'flex',
-                        alignItems: 'center',
+                        cursor: 'none',
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
                     }}
                 >
-                    <img
-                        src="/images/logo.png"
-                        alt="Mushfiq Logo"
-                        style={{
-                            height: '42px',
-                            width: 'auto',
-                            objectFit: 'contain',
-                        }}
-                    />
+                    <LogoMark size="navbar" />
                 </motion.button>
                 {/* Desktop Nav */}
                 <ul style={{
