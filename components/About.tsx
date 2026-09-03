@@ -9,6 +9,7 @@ import {
     fadeUp, fadeLeft, fadeRight,
     staggerContainer, staggerItem, viewport,
 } from '@/lib/animations';
+import CurrentlyBuilding from './ui/CurrentlyBuilding';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -411,29 +412,7 @@ export default function About() {
                         </div>
 
                         {/* Currently building card */}
-                        <div style={{
-                            padding: '20px',
-                            background: 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.05))',
-                            border: '1px solid rgba(124,58,237,0.2)',
-                            borderRadius: '14px',
-                        }}>
-                            <div style={{
-                                fontSize: '0.7rem', fontWeight: 700,
-                                letterSpacing: '0.1em', textTransform: 'uppercase',
-                                color: 'var(--accent-cyan)', marginBottom: '6px',
-                            }}>
-                                Currently building
-                            </div>
-                            <div style={{
-                                fontSize: '0.95rem', fontWeight: 600,
-                                color: 'var(--text-primary)', marginBottom: '4px',
-                            }}>
-                                mushfiq-s-Portfolio — Next.js Portfolio
-                            </div>
-                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                                Next.js 15 · Framer Motion · GSAP · Lenis · TypeScript
-                            </div>
-                        </div>
+                        <CurrentlyBuilding />
                     </motion.div>
                 </div>
             </div>
