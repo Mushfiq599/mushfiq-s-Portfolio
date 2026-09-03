@@ -1,12 +1,18 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
     const cursorRef = useRef<HTMLDivElement>(null);
     const dotRef = useRef<HTMLDivElement>(null);
+    const [isTouch, setIsTouch] = useState(false);
 
     useEffect(() => {
+        // Detect touch device — hide cursor entirely
+        const touch = window.matchMedia('(hover: none)').matches;
+        setIsTouch(touch);
+        if (touch) return;
+
         const cursor = cursorRef.current;
         const dot = dotRef.current;
         if (!cursor || !dot) return;
@@ -19,8 +25,6 @@ export default function CustomCursor() {
         const handleMouseMove = (e: MouseEvent) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-
-            // Dot follows instantly
             dot.style.left = `${mouseX}px`;
             dot.style.top = `${mouseY}px`;
             dot.classList.add('visible');
@@ -46,7 +50,6 @@ export default function CustomCursor() {
             }
         };
 
-        // Smooth trailing ring
         const animate = () => {
             cursorX += (mouseX - cursorX) * 0.12;
             cursorY += (mouseY - cursorY) * 0.12;
@@ -56,7 +59,6 @@ export default function CustomCursor() {
         };
 
         animate();
-
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseleave', handleMouseLeave);
         window.addEventListener('mouseover', handleHoverIn);
@@ -70,11 +72,11 @@ export default function CustomCursor() {
         };
     }, []);
 
+    if (isTouch) return null;
+
     return (
         <>
-            {/* Trailing ring */}
             <div ref={cursorRef} className="custom-cursor-ring" />
-            {/* Instant dot */}
             <div ref={dotRef} className="custom-cursor-dot" />
         </>
     );

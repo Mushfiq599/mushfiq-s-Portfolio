@@ -141,3 +141,24 @@ body {
   background: rgba(124, 58, 237, 0.35);
   color: var(--text-primary);
 }
+
+/* ─── Touch devices — restore default cursor ── */
+@media (hover: none) {
+  html { cursor: auto; }
+  *, a, button { cursor: auto !important; }
+}
+
+/* ─── Mobile section padding ─────────────────── */
+@media (max-width: 768px) {
+  section {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+  }
+}
