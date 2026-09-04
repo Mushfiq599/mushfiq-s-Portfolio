@@ -2,17 +2,16 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 import {
     FaEnvelope, FaPhone, FaWhatsapp,
     FaGithub, FaLinkedin, FaTwitter,
     FaPaperPlane, FaCheckCircle,
 } from 'react-icons/fa';
 import {
-    fadeUp, fadeLeft, fadeRight,
+    fadeUp, fadeRight,
     staggerContainer, staggerItem, viewport,
 } from '@/lib/animations';
-import { FaX } from 'react-icons/fa6';
-import emailjs from '@emailjs/browser';
 
 const contactDetails = [
     {
@@ -45,21 +44,9 @@ const contactDetails = [
 ];
 
 const socialLinks = [
-    {
-        icon: FaGithub,
-        label: 'GitHub',
-        href: 'https://github.com/Mushfiq599',
-    },
-    {
-        icon: FaLinkedin,
-        label: 'LinkedIn',
-        href: 'https://www.linkedin.com/in/mush-fiq',
-    },
-    {
-        icon: FaX,
-        label: 'X',
-        href: 'https://x.com/MushFiq72288867',
-    },
+    { icon: FaGithub, label: 'GitHub', href: 'https://github.com/Mushfiq599' },
+    { icon: FaLinkedin, label: 'LinkedIn', href: 'https://linkedin.com/in/mush-fiq' },
+    { icon: FaTwitter, label: 'Twitter', href: 'https://twitter.com/MushFiq72288867' },
 ];
 
 interface FormState {
@@ -79,57 +66,131 @@ export default function Contact() {
         message: '',
     });
     const [status, setStatus] = useState<Status>('idle');
+    const [errors, setErrors] = useState<Partial<FormState>>({});
+
+    const validate = (): boolean => {
+        const newErrors: Partial<FormState> = {};
+        if (!form.name.trim())
+            newErrors.name = 'Name is required';
+        if (!form.email.trim())
+            newErrors.email = 'Email is required';
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+            newErrors.email = 'Enter a valid email address';
+        if (!form.message.trim())
+            newErrors.message = 'Message is required';
+        else if (form.message.trim().length < 10)
+            newErrors.message = 'Message must be at least 10 characters';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+        // Clear error on change
+        if (errors[name as keyof FormState]) {
+            setErrors((prev) => ({ ...prev, [name]: '' }));
+        }
     };
 
-   const handleSubmit = async (e: React.MouseEvent) => {
-  e.preventDefault();
+    const handleSubmit = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (!validate()) return;
 
-  if (!form.name || !form.email || !form.message) return;
+        setStatus('sending');
 
-  setStatus('sending');
+        try {
+            await emailjs.send(
+                process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+                process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+                {
+                    from_name: form.name,
+                    from_email: form.email,
+                    subject: form.subject || 'No subject',
+                    message: form.message,
+                },
+                process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+            );
 
-  try {
-    await emailjs.send(
-      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-      {
-        from_name: form.name,
-        from_email: form.email,
-        subject: form.subject || 'No subject',
-        message: form.message,
-      },
-      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-    );
+            setStatus('success');
+            setTimeout(() => {
+                setStatus('idle');
+                setForm({ name: '', email: '', subject: '', message: '' });
+                setErrors({});
+            }, 4000);
+        } catch (error) {
+            console.error('EmailJS error:', error);
+            setStatus('error');
+            setTimeout(() => setStatus('idle'), 3000);
+        }
+    };
 
-    setStatus('success');
-    setTimeout(() => {
-      setStatus('idle');
-      setForm({ name: '', email: '', subject: '', message: '' });
-    }, 4000);
-
-  } catch (error) {
-    console.error('EmailJS error:', error);
-    setStatus('error');
-    setTimeout(() => setStatus('idle'), 3000);
-  }
-};
-
-    const inputStyle: React.CSSProperties = {
+    const inputBase: React.CSSProperties = {
         width: '100%',
         padding: '13px 16px',
         background: 'var(--glass)',
-        border: '1px solid var(--border)',
         borderRadius: '10px',
         color: 'var(--text-primary)',
         fontSize: '0.9rem',
         outline: 'none',
-        transition: 'border-color 0.2s, box-shadow 0.2s',
         fontFamily: 'var(--font-inter)',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
+    };
+
+    const getInputStyle = (field: keyof FormState): React.CSSProperties => ({
+        ...inputBase,
+        border: `1px solid ${errors[field] ? 'rgba(236,72,153,0.5)' : 'var(--border)'}`,
+    });
+
+    const handleFocus = (
+        e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: keyof FormState
+    ) => {
+        e.target.style.borderColor = errors[field]
+            ? 'rgba(236,72,153,0.6)'
+            : 'rgba(124,58,237,0.5)';
+        e.target.style.boxShadow = errors[field]
+            ? '0 0 0 3px rgba(236,72,153,0.08)'
+            : '0 0 0 3px rgba(124,58,237,0.08)';
+    };
+
+    const handleBlur = (
+        e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: keyof FormState
+    ) => {
+        e.target.style.borderColor = errors[field]
+            ? 'rgba(236,72,153,0.4)'
+            : 'var(--border)';
+        e.target.style.boxShadow = 'none';
+    };
+
+    const ErrorMsg = ({ field }: { field: keyof FormState }) =>
+        errors[field] ? (
+            <motion.span
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{
+                    display: 'block',
+                    fontSize: '0.72rem',
+                    color: 'var(--accent-magenta)',
+                    marginTop: '5px',
+                    paddingLeft: '2px',
+                }}
+            >
+                ⚠ {errors[field]}
+            </motion.span>
+        ) : null;
+
+    const labelStyle: React.CSSProperties = {
+        display: 'block',
+        fontSize: '0.72rem',
+        fontWeight: 700,
+        color: 'var(--text-muted)',
+        marginBottom: '6px',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
     };
 
     return (
@@ -144,34 +205,19 @@ export default function Contact() {
         >
             {/* Background accents */}
             <div style={{
-                position: 'absolute',
-                top: '20%',
-                left: '-80px',
-                width: '380px',
-                height: '380px',
+                position: 'absolute', top: '20%', left: '-80px',
+                width: '380px', height: '380px',
                 background: 'radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(40px)',
-                pointerEvents: 'none',
+                borderRadius: '50%', filter: 'blur(40px)', pointerEvents: 'none',
             }} />
             <div style={{
-                position: 'absolute',
-                bottom: '10%',
-                right: '-60px',
-                width: '320px',
-                height: '320px',
+                position: 'absolute', bottom: '10%', right: '-60px',
+                width: '320px', height: '320px',
                 background: 'radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(40px)',
-                pointerEvents: 'none',
+                borderRadius: '50%', filter: 'blur(40px)', pointerEvents: 'none',
             }} />
 
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                position: 'relative',
-                zIndex: 1,
-            }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
                 {/* Header */}
                 <motion.div
@@ -207,20 +253,14 @@ export default function Contact() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={viewport}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
+                        style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
                     >
                         <motion.h3
                             variants={staggerItem}
                             style={{
                                 fontFamily: 'var(--font-space)',
-                                fontSize: '1.1rem',
-                                fontWeight: 600,
-                                color: 'var(--text-primary)',
-                                marginBottom: '8px',
+                                fontSize: '1.1rem', fontWeight: 600,
+                                color: 'var(--text-primary)', marginBottom: '4px',
                             }}
                         >
                             Reach me directly
@@ -248,33 +288,23 @@ export default function Contact() {
                                 }}
                             >
                                 <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '10px',
+                                    width: '40px', height: '40px', borderRadius: '10px',
                                     background: `${color}20`,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color,
-                                    fontSize: '1rem',
-                                    flexShrink: 0,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color, fontSize: '1rem', flexShrink: 0,
                                 }}>
                                     <Icon />
                                 </div>
                                 <div>
                                     <div style={{
-                                        fontSize: '0.72rem',
-                                        fontWeight: 600,
-                                        letterSpacing: '0.08em',
-                                        textTransform: 'uppercase',
-                                        color: 'var(--text-muted)',
-                                        marginBottom: '2px',
+                                        fontSize: '0.7rem', fontWeight: 700,
+                                        letterSpacing: '0.08em', textTransform: 'uppercase',
+                                        color: 'var(--text-muted)', marginBottom: '2px',
                                     }}>
                                         {label}
                                     </div>
                                     <div style={{
-                                        fontSize: '0.875rem',
-                                        fontWeight: 500,
+                                        fontSize: '0.875rem', fontWeight: 500,
                                         color: 'var(--text-primary)',
                                     }}>
                                         {value}
@@ -284,14 +314,11 @@ export default function Contact() {
                         ))}
 
                         {/* Social links */}
-                        <motion.div variants={staggerItem} style={{ marginTop: '8px' }}>
+                        <motion.div variants={staggerItem} style={{ marginTop: '4px' }}>
                             <p style={{
-                                fontSize: '0.78rem',
-                                color: 'var(--text-muted)',
-                                fontWeight: 600,
-                                letterSpacing: '0.08em',
-                                textTransform: 'uppercase',
-                                marginBottom: '12px',
+                                fontSize: '0.72rem', color: 'var(--text-muted)',
+                                fontWeight: 700, letterSpacing: '0.08em',
+                                textTransform: 'uppercase', marginBottom: '12px',
                             }}>
                                 Find me on
                             </p>
@@ -310,18 +337,12 @@ export default function Contact() {
                                         }}
                                         whileTap={{ scale: 0.9 }}
                                         style={{
-                                            width: '42px',
-                                            height: '42px',
-                                            borderRadius: '10px',
+                                            width: '42px', height: '42px', borderRadius: '10px',
                                             border: '1px solid var(--border)',
                                             background: 'var(--glass)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'var(--text-muted)',
-                                            fontSize: '1rem',
-                                            textDecoration: 'none',
-                                            transition: 'color 0.2s',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            color: 'var(--text-muted)', fontSize: '1rem',
+                                            textDecoration: 'none', transition: 'color 0.2s',
                                         }}
                                     >
                                         <Icon />
@@ -334,7 +355,7 @@ export default function Contact() {
                         <motion.div
                             variants={staggerItem}
                             style={{
-                                marginTop: '8px',
+                                marginTop: '4px',
                                 padding: '20px',
                                 background: 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.05))',
                                 border: '1px solid rgba(124,58,237,0.2)',
@@ -342,31 +363,19 @@ export default function Contact() {
                             }}
                         >
                             <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                marginBottom: '6px',
+                                display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px',
                             }}>
                                 <span style={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    background: '#22c55e',
-                                    display: 'inline-block',
+                                    width: '8px', height: '8px', borderRadius: '50%',
+                                    background: '#22c55e', display: 'inline-block',
                                     animation: 'pulse 2s infinite',
                                 }} />
-                                <span style={{
-                                    fontSize: '0.82rem',
-                                    fontWeight: 700,
-                                    color: '#22c55e',
-                                }}>
+                                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#22c55e' }}>
                                     Currently available
                                 </span>
                             </div>
                             <p style={{
-                                fontSize: '0.8rem',
-                                color: 'var(--text-muted)',
-                                lineHeight: 1.6,
+                                fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6,
                             }}>
                                 Open to freelance projects, internships, and
                                 full-time roles. Response time is usually within 24 hours.
@@ -393,13 +402,9 @@ export default function Contact() {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    textAlign: 'center',
-                                    minHeight: '360px',
-                                    gap: '16px',
+                                    display: 'flex', flexDirection: 'column',
+                                    alignItems: 'center', justifyContent: 'center',
+                                    textAlign: 'center', minHeight: '360px', gap: '16px',
                                 }}
                             >
                                 <motion.div
@@ -407,50 +412,36 @@ export default function Contact() {
                                     animate={{ scale: 1 }}
                                     transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
                                     style={{
-                                        width: '64px',
-                                        height: '64px',
-                                        borderRadius: '50%',
+                                        width: '64px', height: '64px', borderRadius: '50%',
                                         background: 'rgba(34,197,94,0.12)',
                                         border: '1px solid rgba(34,197,94,0.3)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: '#22c55e',
-                                        fontSize: '1.8rem',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        color: '#22c55e', fontSize: '1.8rem',
                                     }}
                                 >
                                     <FaCheckCircle />
                                 </motion.div>
                                 <h3 style={{
                                     fontFamily: 'var(--font-space)',
-                                    fontSize: '1.3rem',
-                                    fontWeight: 700,
+                                    fontSize: '1.3rem', fontWeight: 700,
                                     color: 'var(--text-primary)',
                                 }}>
                                     Message sent!
                                 </h3>
                                 <p style={{
-                                    fontSize: '0.9rem',
-                                    color: 'var(--text-muted)',
-                                    maxWidth: '280px',
-                                    lineHeight: 1.6,
+                                    fontSize: '0.9rem', color: 'var(--text-muted)',
+                                    maxWidth: '280px', lineHeight: 1.6,
                                 }}>
                                     Thanks for reaching out. I'll get back to you within 24 hours.
                                 </p>
                             </motion.div>
                         ) : (
                             /* Form */
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '20px',
-                            }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <h3 style={{
                                     fontFamily: 'var(--font-space)',
-                                    fontSize: '1.1rem',
-                                    fontWeight: 600,
-                                    color: 'var(--text-primary)',
-                                    marginBottom: '4px',
+                                    fontSize: '1.1rem', fontWeight: 600,
+                                    color: 'var(--text-primary)', marginBottom: '4px',
                                 }}>
                                     Send a message
                                 </h3>
@@ -463,106 +454,57 @@ export default function Contact() {
                                 }}
                                     className="form-row"
                                 >
+                                    {/* Name */}
                                     <div>
-                                        <label style={{
-                                            display: 'block',
-                                            fontSize: '0.75rem',
-                                            fontWeight: 600,
-                                            color: 'var(--text-muted)',
-                                            marginBottom: '6px',
-                                            letterSpacing: '0.05em',
-                                        }}>
-                                            NAME *
-                                        </label>
+                                        <label style={labelStyle}>Name *</label>
                                         <input
                                             type="text"
                                             name="name"
                                             value={form.name}
                                             onChange={handleChange}
                                             placeholder="Your name"
-                                            style={inputStyle}
-                                            onFocus={(e) => {
-                                                e.target.style.borderColor = 'rgba(124,58,237,0.5)';
-                                                e.target.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.08)';
-                                            }}
-                                            onBlur={(e) => {
-                                                e.target.style.borderColor = 'var(--border)';
-                                                e.target.style.boxShadow = 'none';
-                                            }}
+                                            style={getInputStyle('name')}
+                                            onFocus={(e) => handleFocus(e, 'name')}
+                                            onBlur={(e) => handleBlur(e, 'name')}
                                         />
+                                        <ErrorMsg field="name" />
                                     </div>
+
+                                    {/* Email */}
                                     <div>
-                                        <label style={{
-                                            display: 'block',
-                                            fontSize: '0.75rem',
-                                            fontWeight: 600,
-                                            color: 'var(--text-muted)',
-                                            marginBottom: '6px',
-                                            letterSpacing: '0.05em',
-                                        }}>
-                                            EMAIL *
-                                        </label>
+                                        <label style={labelStyle}>Email *</label>
                                         <input
                                             type="email"
                                             name="email"
                                             value={form.email}
                                             onChange={handleChange}
                                             placeholder="your@email.com"
-                                            style={inputStyle}
-                                            onFocus={(e) => {
-                                                e.target.style.borderColor = 'rgba(124,58,237,0.5)';
-                                                e.target.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.08)';
-                                            }}
-                                            onBlur={(e) => {
-                                                e.target.style.borderColor = 'var(--border)';
-                                                e.target.style.boxShadow = 'none';
-                                            }}
+                                            style={getInputStyle('email')}
+                                            onFocus={(e) => handleFocus(e, 'email')}
+                                            onBlur={(e) => handleBlur(e, 'email')}
                                         />
+                                        <ErrorMsg field="email" />
                                     </div>
                                 </div>
 
                                 {/* Subject */}
                                 <div>
-                                    <label style={{
-                                        display: 'block',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 600,
-                                        color: 'var(--text-muted)',
-                                        marginBottom: '6px',
-                                        letterSpacing: '0.05em',
-                                    }}>
-                                        SUBJECT
-                                    </label>
+                                    <label style={labelStyle}>Subject</label>
                                     <input
                                         type="text"
                                         name="subject"
                                         value={form.subject}
                                         onChange={handleChange}
                                         placeholder="What's this about?"
-                                        style={inputStyle}
-                                        onFocus={(e) => {
-                                            e.target.style.borderColor = 'rgba(124,58,237,0.5)';
-                                            e.target.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.08)';
-                                        }}
-                                        onBlur={(e) => {
-                                            e.target.style.borderColor = 'var(--border)';
-                                            e.target.style.boxShadow = 'none';
-                                        }}
+                                        style={getInputStyle('subject')}
+                                        onFocus={(e) => handleFocus(e, 'subject')}
+                                        onBlur={(e) => handleBlur(e, 'subject')}
                                     />
                                 </div>
 
                                 {/* Message */}
                                 <div>
-                                    <label style={{
-                                        display: 'block',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 600,
-                                        color: 'var(--text-muted)',
-                                        marginBottom: '6px',
-                                        letterSpacing: '0.05em',
-                                    }}>
-                                        MESSAGE *
-                                    </label>
+                                    <label style={labelStyle}>Message *</label>
                                     <textarea
                                         name="message"
                                         value={form.message}
@@ -570,20 +512,43 @@ export default function Contact() {
                                         placeholder="Tell me about your project, timeline, budget..."
                                         rows={5}
                                         style={{
-                                            ...inputStyle,
+                                            ...getInputStyle('message'),
                                             resize: 'vertical',
                                             minHeight: '130px',
                                         }}
-                                        onFocus={(e) => {
-                                            e.target.style.borderColor = 'rgba(124,58,237,0.5)';
-                                            e.target.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.08)';
-                                        }}
-                                        onBlur={(e) => {
-                                            e.target.style.borderColor = 'var(--border)';
-                                            e.target.style.boxShadow = 'none';
-                                        }}
+                                        onFocus={(e) => handleFocus(e, 'message')}
+                                        onBlur={(e) => handleBlur(e, 'message')}
                                     />
+                                    <ErrorMsg field="message" />
                                 </div>
+
+                                {/* Error banner */}
+                                {status === 'error' && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -4 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        style={{
+                                            padding: '12px 16px',
+                                            background: 'rgba(236,72,153,0.08)',
+                                            border: '1px solid rgba(236,72,153,0.2)',
+                                            borderRadius: '8px',
+                                            fontSize: '0.82rem',
+                                            color: 'var(--accent-magenta)',
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        Something went wrong. Email me directly at{' '}
+                                        <a
+                                            href="mailto:mellowm678@gmail.com"
+                                            style={{
+                                                color: 'var(--accent-purple-light)',
+                                                textDecoration: 'underline',
+                                            }}
+                                        >
+                                            mellowm678@gmail.com
+                                        </a>
+                                    </motion.div>
+                                )}
 
                                 {/* Submit */}
                                 <motion.button
@@ -618,8 +583,7 @@ export default function Contact() {
                                                 animate={{ rotate: 360 }}
                                                 transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
                                                 style={{
-                                                    width: '16px',
-                                                    height: '16px',
+                                                    width: '16px', height: '16px',
                                                     border: '2px solid rgba(255,255,255,0.3)',
                                                     borderTopColor: '#fff',
                                                     borderRadius: '50%',
@@ -662,12 +626,8 @@ export default function Contact() {
           50% { opacity: 0.4; }
         }
         @media (max-width: 768px) {
-          .contact-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .form-row {
-            grid-template-columns: 1fr !important;
-          }
+          .contact-grid { grid-template-columns: 1fr !important; }
+          .form-row { grid-template-columns: 1fr !important; }
         }
       `}</style>
         </section >

@@ -18,14 +18,17 @@
 }
 
 /* ─── Base ───────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 html {
-  scroll-behavior: auto; /* Lenis handles this */
+  scroll-behavior: auto;
+  /* Lenis handles this */
   cursor: none;
 }
 
@@ -38,7 +41,9 @@ body {
 }
 
 /* Hide default cursor everywhere when custom cursor is active */
-*, a, button {
+*,
+a,
+button {
   cursor: none !important;
 }
 
@@ -56,7 +61,9 @@ body {
   transition: opacity 0.3s, width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
 }
 
-.custom-cursor-ring.visible { opacity: 1; }
+.custom-cursor-ring.visible {
+  opacity: 1;
+}
 
 .custom-cursor-ring.expanded {
   width: 56px;
@@ -78,7 +85,9 @@ body {
   transition: opacity 0.3s;
 }
 
-.custom-cursor-dot.visible { opacity: 1; }
+.custom-cursor-dot.visible {
+  opacity: 1;
+}
 
 /* ─── Section Shared ─────────────────────────────── */
 .section-tag {
@@ -129,8 +138,14 @@ body {
 }
 
 /* ─── Scrollbar ──────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
 ::-webkit-scrollbar-thumb {
   background: var(--accent-purple);
   border-radius: 4px;
@@ -144,8 +159,15 @@ body {
 
 /* ─── Touch devices — restore default cursor ── */
 @media (hover: none) {
-  html { cursor: auto; }
-  *, a, button { cursor: auto !important; }
+  html {
+    cursor: auto;
+  }
+
+  *,
+  a,
+  button {
+    cursor: auto !important;
+  }
 }
 
 /* ─── Mobile section padding ─────────────────── */
@@ -160,5 +182,52 @@ body {
   section {
     padding-top: 64px !important;
     padding-bottom: 64px !important;
+  }
+}
+
+/* ─── Print styles ──────────────────────────── */
+@media print {
+
+  /* Hide animated/interactive elements */
+  .custom-cursor-ring,
+  .custom-cursor-dot,
+  nav,
+  #github,
+  #contact,
+  footer,
+  .galaxy-particle {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  section {
+    padding: 24px 0 !important;
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: #000 !important;
+  }
+
+  p,
+  li,
+  span {
+    color: #333 !important;
+  }
+
+  a {
+    color: #7C3AED !important;
+    text-decoration: underline !important;
+  }
+
+  .gradient-text {
+    -webkit-text-fill-color: #7C3AED !important;
   }
 }
