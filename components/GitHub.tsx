@@ -55,7 +55,7 @@ interface Stats {
     averageDaily: number;
 }
 
-// ── Heatmap cell color — gradient purple → cyan ───
+// ── Heatmap gradient purple → cyan ────────────────
 function getCellColor(count: number): string {
     if (count === 0) return 'rgba(255,255,255,0.04)';
     if (count <= 2) return 'rgba(124,58,237,0.4)';
@@ -107,24 +107,22 @@ function DonutChart({ languages }: { languages: Language[] }) {
     });
 
     return (
-        <div style={{
-            display: 'grid',
-            gridTemplateColumns: '220px 1fr',
-            gap: '32px',
-            alignItems: 'center',
-        }}
+        <div
+            style={{
+                display: 'grid',
+                gridTemplateColumns: '220px 1fr',
+                gap: '32px',
+                alignItems: 'center',
+            }}
             className="donut-grid"
         >
-            {/* Donut */}
+            {/* Donut SVG */}
             <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
                 <div style={{
-                    position: 'absolute', inset: '-8px',
-                    borderRadius: '50%',
+                    position: 'absolute', inset: '-8px', borderRadius: '50%',
                     background: 'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)',
-                    filter: 'blur(8px)',
-                    pointerEvents: 'none',
+                    filter: 'blur(8px)', pointerEvents: 'none',
                 }} />
-
                 <svg
                     width={size} height={size}
                     style={{
@@ -134,8 +132,7 @@ function DonutChart({ languages }: { languages: Language[] }) {
                 >
                     <circle
                         cx={size / 2} cy={size / 2} r={radius}
-                        fill="none"
-                        stroke="rgba(255,255,255,0.04)"
+                        fill="none" stroke="rgba(255,255,255,0.04)"
                         strokeWidth={strokeWidth}
                     />
                     {segments.map((seg, i) => (
@@ -149,16 +146,12 @@ function DonutChart({ languages }: { languages: Language[] }) {
                             strokeDashoffset={-seg.offset}
                             strokeLinecap="round"
                             initial={{ strokeDasharray: `0 ${circumference}`, opacity: 0 }}
-                            animate={{
-                                strokeDasharray: `${seg.dash} ${circumference - seg.dash}`,
-                                opacity: 1,
-                            }}
+                            animate={{ strokeDasharray: `${seg.dash} ${circumference - seg.dash}`, opacity: 1 }}
                             transition={{ duration: 1.2, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
                             style={{ filter: `drop-shadow(0 0 6px ${seg.color}88)` }}
                         />
                     ))}
                 </svg>
-
                 {/* Center */}
                 <div style={{
                     position: 'absolute', inset: 0,
@@ -240,7 +233,7 @@ function DonutChart({ languages }: { languages: Language[] }) {
                     </motion.div>
                 ))}
 
-                {/* Combined bar */}
+                {/* Combined stacked bar */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -328,7 +321,6 @@ export default function GitHub() {
         if (loading || error) return;
         const ctx = gsap.context(() => {
 
-            // Floating particles
             gsap.utils.toArray<HTMLElement>('.galaxy-particle').forEach((el) => {
                 gsap.to(el, {
                     x: gsap.utils.random(-30, 30),
@@ -341,7 +333,6 @@ export default function GitHub() {
                 });
             });
 
-            // Animated stat counters
             counterRefs.current.forEach((el) => {
                 if (!el) return;
                 const target = parseInt(el.dataset.target || '0');
@@ -354,8 +345,7 @@ export default function GitHub() {
                         ease: 'power2.out',
                         scrollTrigger: { trigger: el, start: 'top 85%' },
                         onUpdate: function () {
-                            const progress = this.progress();
-                            const current = Math.round(target * progress);
+                            const current = Math.round(target * this.progress());
                             el.innerText = current.toString() + suffix;
                         },
                     }
@@ -477,7 +467,7 @@ export default function GitHub() {
                     </div>
                 )}
 
-                {/* ── Profile + Stats ───────────────────────── */}
+                {/* ── Profile + Stats ── */}
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: '280px 1fr',
@@ -515,8 +505,7 @@ export default function GitHub() {
                             <>
                                 <div style={{ position: 'relative' }}>
                                     <div style={{
-                                        position: 'absolute', inset: '-3px',
-                                        borderRadius: '50%',
+                                        position: 'absolute', inset: '-3px', borderRadius: '50%',
                                         background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-cyan))',
                                         zIndex: 0,
                                     }} />
@@ -543,8 +532,7 @@ export default function GitHub() {
                                     </div>
                                     <div style={{
                                         fontSize: '0.8rem',
-                                        color: 'var(--accent-purple-light)',
-                                        fontWeight: 500,
+                                        color: 'var(--accent-purple-light)', fontWeight: 500,
                                     }}>
                                         @{user.login}
                                     </div>
@@ -552,17 +540,14 @@ export default function GitHub() {
 
                                 {user.bio && (
                                     <p style={{
-                                        fontSize: '0.8rem',
-                                        color: 'var(--text-muted)',
-                                        lineHeight: 1.6,
+                                        fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6,
                                     }}>
                                         {user.bio}
                                     </p>
                                 )}
 
                                 <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr 1fr',
+                                    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
                                     gap: '8px', width: '100%',
                                 }}>
                                     {[
@@ -677,7 +662,7 @@ export default function GitHub() {
                     </motion.div>
                 </div>
 
-                {/* ── Language breakdown ────────────────────── */}
+                {/* ── Language breakdown ── */}
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
@@ -712,12 +697,12 @@ export default function GitHub() {
                         <DonutChart languages={languages} />
                     ) : (
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                            No language data available — add a GITHUB_TOKEN env variable.
+                            No language data — add a GITHUB_TOKEN env variable.
                         </p>
                     )}
                 </motion.div>
 
-                {/* ── Contribution heatmap ──────────────────── */}
+                {/* ── Contribution heatmap ── */}
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
@@ -733,10 +718,8 @@ export default function GitHub() {
                     }}
                 >
                     <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '20px',
+                        display: 'flex', justifyContent: 'space-between',
+                        alignItems: 'center', marginBottom: '20px',
                         flexWrap: 'wrap', gap: '8px',
                     }}>
                         <h3 style={{
@@ -771,87 +754,110 @@ export default function GitHub() {
                             borderRadius: '8px',
                         }} />
                     ) : (
-                        <div style={{ overflowX: 'auto', paddingBottom: '4px' }}>
-                            {/* Month labels */}
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: `repeat(${weeks.length}, 13px)`,
-                                gap: '2px', marginBottom: '4px',
-                            }}>
-                                {weeks.map((_, i) => {
-                                    const label = monthLabels.find((m) => m.col === i);
-                                    return (
-                                        <div key={i} style={{
-                                            fontSize: '0.6rem',
-                                            color: label ? 'var(--text-muted)' : 'transparent',
-                                            whiteSpace: 'nowrap', userSelect: 'none',
-                                        }}>
-                                            {label?.label || '.'}
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                        <div style={{ position: 'relative' }}>
+                            {/* Right fade scroll hint */}
+                            <div
+                                className="heatmap-fade-right"
+                                style={{
+                                    position: 'absolute',
+                                    top: 0, right: 0, bottom: 0,
+                                    width: '40px',
+                                    background: 'linear-gradient(to left, var(--bg-card), transparent)',
+                                    zIndex: 2, pointerEvents: 'none',
+                                }}
+                            />
 
-                            <div style={{ display: 'flex', gap: '2px' }}>
-                                {/* Day labels */}
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateRows: 'repeat(7, 13px)',
-                                    gap: '2px', marginRight: '4px',
-                                }}>
-                                    {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((d, i) => (
-                                        <div key={i} style={{
-                                            fontSize: '0.6rem',
-                                            color: d ? 'var(--text-muted)' : 'transparent',
-                                            lineHeight: '13px', textAlign: 'right',
-                                            userSelect: 'none',
-                                        }}>
-                                            {d || '.'}
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Heatmap cells */}
+                            <div
+                                style={{
+                                    overflowX: 'auto',
+                                    paddingBottom: '8px',
+                                    WebkitOverflowScrolling: 'touch',
+                                    scrollbarWidth: 'thin',
+                                    scrollbarColor: 'rgba(124,58,237,0.3) transparent',
+                                } as React.CSSProperties}
+                            >
+                                {/* Month labels */}
                                 <div style={{
                                     display: 'grid',
                                     gridTemplateColumns: `repeat(${weeks.length}, 13px)`,
-                                    gridTemplateRows: 'repeat(7, 13px)',
-                                    gridAutoFlow: 'column',
-                                    gap: '2px',
+                                    gap: '2px', marginBottom: '4px',
+                                    paddingLeft: '28px',
                                 }}>
-                                    {weeks.flatMap((week) =>
-                                        week.map((day) => (
-                                            <div
-                                                key={day.date}
-                                                onMouseEnter={(e) => {
-                                                    const rect = (e.target as HTMLElement).getBoundingClientRect();
-                                                    setTooltip({
-                                                        x: rect.left + window.scrollX,
-                                                        y: rect.top + window.scrollY - 40,
-                                                        date: day.date,
-                                                        count: day.count,
-                                                    });
-                                                }}
-                                                onMouseLeave={() => setTooltip(null)}
-                                                style={{
-                                                    width: '13px', height: '13px',
-                                                    borderRadius: '2px',
-                                                    background: getCellColor(day.count),
-                                                    border: '1px solid rgba(255,255,255,0.04)',
-                                                    transition: 'transform 0.1s, filter 0.1s',
-                                                    cursor: 'default',
-                                                }}
-                                                onMouseOver={(e) => {
-                                                    (e.target as HTMLElement).style.transform = 'scale(1.4)';
-                                                    (e.target as HTMLElement).style.filter = 'brightness(1.4)';
-                                                }}
-                                                onMouseOut={(e) => {
-                                                    (e.target as HTMLElement).style.transform = 'scale(1)';
-                                                    (e.target as HTMLElement).style.filter = 'none';
-                                                }}
-                                            />
-                                        ))
-                                    )}
+                                    {weeks.map((_, i) => {
+                                        const label = monthLabels.find((m) => m.col === i);
+                                        return (
+                                            <div key={i} style={{
+                                                fontSize: '0.6rem',
+                                                color: label ? 'var(--text-muted)' : 'transparent',
+                                                whiteSpace: 'nowrap', userSelect: 'none',
+                                            }}>
+                                                {label?.label || '.'}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '2px' }}>
+                                    {/* Day labels */}
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateRows: 'repeat(7, 13px)',
+                                        gap: '2px', marginRight: '4px', flexShrink: 0,
+                                    }}>
+                                        {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((d, i) => (
+                                            <div key={i} style={{
+                                                fontSize: '0.6rem',
+                                                color: d ? 'var(--text-muted)' : 'transparent',
+                                                lineHeight: '13px', textAlign: 'right',
+                                                userSelect: 'none', whiteSpace: 'nowrap',
+                                            }}>
+                                                {d || '.'}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Cells */}
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: `repeat(${weeks.length}, 13px)`,
+                                        gridTemplateRows: 'repeat(7, 13px)',
+                                        gridAutoFlow: 'column',
+                                        gap: '2px',
+                                    }}>
+                                        {weeks.flatMap((week) =>
+                                            week.map((day) => (
+                                                <div
+                                                    key={day.date}
+                                                    onMouseEnter={(e) => {
+                                                        const rect = (e.target as HTMLElement).getBoundingClientRect();
+                                                        setTooltip({
+                                                            x: rect.left + window.scrollX,
+                                                            y: rect.top + window.scrollY - 40,
+                                                            date: day.date,
+                                                            count: day.count,
+                                                        });
+                                                    }}
+                                                    onMouseLeave={() => setTooltip(null)}
+                                                    style={{
+                                                        width: '13px', height: '13px',
+                                                        borderRadius: '2px',
+                                                        background: getCellColor(day.count),
+                                                        border: '1px solid rgba(255,255,255,0.04)',
+                                                        transition: 'transform 0.1s, filter 0.1s',
+                                                        cursor: 'default',
+                                                    }}
+                                                    onMouseOver={(e) => {
+                                                        (e.target as HTMLElement).style.transform = 'scale(1.4)';
+                                                        (e.target as HTMLElement).style.filter = 'brightness(1.4)';
+                                                    }}
+                                                    onMouseOut={(e) => {
+                                                        (e.target as HTMLElement).style.transform = 'scale(1)';
+                                                        (e.target as HTMLElement).style.filter = 'none';
+                                                    }}
+                                                />
+                                            ))
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -881,7 +887,7 @@ export default function GitHub() {
                     )}
                 </motion.div>
 
-                {/* ── Pinned repos ──────────────────────────── */}
+                {/* ── Pinned repos ── */}
                 <motion.div
                     variants={staggerContainer}
                     initial="hidden"
@@ -949,7 +955,7 @@ export default function GitHub() {
                                         WebkitLineClamp: 2,
                                         WebkitBoxOrient: 'vertical',
                                         overflow: 'hidden', flex: 1,
-                                    }}>
+                                    } as React.CSSProperties}>
                                         {repo.description || 'No description provided.'}
                                     </p>
 
@@ -965,14 +971,9 @@ export default function GitHub() {
                                                     const total = repo.languages.reduce((s, l) => s + l.size, 0);
                                                     const pct = (lang.size / total) * 100;
                                                     return (
-                                                        <div
-                                                            key={lang.name}
-                                                            style={{
-                                                                width: `${pct}%`,
-                                                                background: lang.color,
-                                                                borderRadius: '4px',
-                                                            }}
-                                                        />
+                                                        <div key={lang.name} style={{
+                                                            width: `${pct}%`, background: lang.color, borderRadius: '4px',
+                                                        }} />
                                                     );
                                                 })}
                                             </div>
@@ -1040,6 +1041,10 @@ export default function GitHub() {
         @media (max-width: 560px) {
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .repos-grid { grid-template-columns: 1fr !important; }
+          .heatmap-fade-right { display: block; }
+        }
+        @media (min-width: 561px) {
+          .heatmap-fade-right { display: none; }
         }
       `}</style>
         </section>
