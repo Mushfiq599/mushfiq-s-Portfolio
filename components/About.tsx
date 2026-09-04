@@ -1,12 +1,12 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { FaCode, FaHeart, FaRocket, FaCoffee } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-    fadeUp, fadeLeft, fadeRight,
+    fadeUp, fadeRight,
     staggerContainer, staggerItem, viewport,
 } from '@/lib/animations';
 import CurrentlyBuilding from './ui/CurrentlyBuilding';
@@ -89,14 +89,17 @@ function FloatingBadge({
 export default function About() {
     const sectionRef = useRef<HTMLElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
-
     const springConfig = { stiffness: 120, damping: 20 };
     const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), springConfig);
     const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig);
 
     useEffect(() => {
+        setIsTouchDevice(window.matchMedia('(hover: none)').matches);
+
         const ctx = gsap.context(() => {
             gsap.fromTo(imageRef.current,
                 { opacity: 0, y: 60, scale: 0.95 },
@@ -111,16 +114,19 @@ export default function About() {
                 duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut',
             });
         }, sectionRef);
+
         return () => ctx.revert();
     }, []);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isTouchDevice) return;
         const rect = e.currentTarget.getBoundingClientRect();
         mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
         mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
     };
 
     const handleMouseLeave = () => {
+        if (isTouchDevice) return;
         mouseX.set(0);
         mouseY.set(0);
     };
@@ -148,7 +154,6 @@ export default function About() {
                 background: 'radial-gradient(circle, rgba(6,182,212,0.05) 0%, transparent 70%)',
                 borderRadius: '50%', filter: 'blur(40px)', pointerEvents: 'none',
             }} />
-            {/* Subtle grid */}
             <div style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
                 backgroundImage: `
@@ -160,7 +165,7 @@ export default function About() {
 
             <div style={{ maxWidth: '1160px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
-                {/* ── Section header ───────────────────────── */}
+                {/* ── Section header ── */}
                 <motion.div
                     variants={fadeUp}
                     initial="hidden"
@@ -179,7 +184,7 @@ export default function About() {
                     </p>
                 </motion.div>
 
-                {/* ── Main grid ────────────────────────────── */}
+                {/* ── Main grid ── */}
                 <div
                     style={{
                         display: 'grid',
@@ -190,18 +195,17 @@ export default function About() {
                     className="about-main-grid"
                 >
 
-                    {/* ════════════════════════════════════════
-              LEFT — Photo + highlight cards
-          ════════════════════════════════════════ */}
+                    {/* ── LEFT — Photo + highlight cards ── */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
 
-                        {/* ── Photo card ────────────────────── */}
+                        {/* Photo */}
                         <div ref={imageRef} style={{ opacity: 0 }}>
                             <motion.div
                                 onMouseMove={handleMouseMove}
                                 onMouseLeave={handleMouseLeave}
                                 style={{
-                                    rotateX, rotateY,
+                                    rotateX: isTouchDevice ? 0 : rotateX,
+                                    rotateY: isTouchDevice ? 0 : rotateY,
                                     transformPerspective: 900,
                                     transformStyle: 'preserve-3d',
                                     position: 'relative',
@@ -230,9 +234,11 @@ export default function About() {
                                     <img
                                         src="/images/profile.png"
                                         alt="Mushfiq — Full Stack Developer"
-                                        style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
+                                        style={{
+                                            width: '100%', height: 'auto',
+                                            display: 'block', objectFit: 'cover',
+                                        }}
                                     />
-                                    {/* Bottom fade */}
                                     <div style={{
                                         position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%',
                                         background: 'linear-gradient(to top, rgba(10,10,15,0.55), transparent)',
@@ -256,7 +262,7 @@ export default function About() {
                                     MERN Stack
                                 </FloatingBadge>
 
-                                {/* Floating skill pills */}
+                                {/* Floating skill pills — hidden on mobile */}
                                 {['React', 'Next.js', 'Node'].map((tech, i) => (
                                     <motion.div
                                         key={tech}
@@ -267,6 +273,7 @@ export default function About() {
                                             ease: 'easeInOut',
                                             delay: i * 0.8,
                                         }}
+                                        className="skill-pill"
                                         style={{
                                             position: 'absolute',
                                             top: `${22 + i * 24}%`,
@@ -287,7 +294,7 @@ export default function About() {
                             </motion.div>
                         </div>
 
-                        {/* ── Highlight cards ───────────────── */}
+                        {/* Highlight cards */}
                         <motion.div
                             variants={staggerContainer}
                             initial="hidden"
@@ -339,9 +346,7 @@ export default function About() {
                         </motion.div>
                     </div>
 
-                    {/* ════════════════════════════════════════
-              RIGHT — Story + facts + currently building
-          ════════════════════════════════════════ */}
+                    {/* ── RIGHT — Story + facts + currently building ── */}
                     <motion.div
                         variants={fadeRight}
                         initial="hidden"
@@ -350,8 +355,7 @@ export default function About() {
                         style={{ position: 'sticky', top: '120px' }}
                         className="about-right-sticky"
                     >
-
-                        {/* ── Journey heading ───────────────── */}
+                        {/* Journey heading */}
                         <div style={{ marginBottom: '24px' }}>
                             <h3 style={{
                                 fontFamily: 'var(--font-space)',
@@ -360,7 +364,6 @@ export default function About() {
                                 color: 'var(--text-primary)',
                                 letterSpacing: '-0.02em',
                                 lineHeight: 1.2,
-                                marginBottom: '4px',
                             }}>
                                 My journey into development
                             </h3>
@@ -372,7 +375,7 @@ export default function About() {
                             }} />
                         </div>
 
-                        {/* ── Story paragraphs ──────────────── */}
+                        {/* Story */}
                         <div style={{
                             display: 'flex', flexDirection: 'column', gap: '14px',
                             marginBottom: '36px',
@@ -382,9 +385,9 @@ export default function About() {
                                 lineHeight: 1.85, margin: 0,
                             }}>
                                 It didn't start with a plan — it started with a question.{' '}
-                                <em style={{ color: 'var(--text-primary)', fontStyle: 'normal', fontWeight: 500 }}>
+                                <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
                                     How does this actually work?
-                                </em>{' '}
+                                </span>{' '}
                                 That single question pulled me into a rabbit hole of HTML, then CSS,
                                 then JavaScript — and I never came back out. What began as curiosity
                                 became conviction.
@@ -397,9 +400,9 @@ export default function About() {
                                 that feel alive, backed by Node.js APIs and MongoDB databases that scale.
                                 I'm a CSE student at UITS by day, and a relentless builder by night.
                                 Most of what I know came from shipping real things,{' '}
-                                <em style={{ color: 'var(--text-primary)', fontStyle: 'normal', fontWeight: 500 }}>
+                                <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
                                     watching them break,
-                                </em>{' '}
+                                </span>{' '}
                                 and understanding exactly why.
                             </p>
                             <p style={{
@@ -421,7 +424,7 @@ export default function About() {
                             </p>
                         </div>
 
-                        {/* ── Facts grid ────────────────────── */}
+                        {/* Facts grid */}
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: '1fr 1fr',
@@ -458,9 +461,8 @@ export default function About() {
                             ))}
                         </div>
 
-                        {/* ── Currently building ────────────── */}
+                        {/* Currently building */}
                         <CurrentlyBuilding />
-
                     </motion.div>
                 </div>
             </div>
@@ -479,10 +481,16 @@ export default function About() {
             position: relative !important;
             top: 0 !important;
           }
+          .skill-pill {
+            display: none !important;
+          }
         }
         @media (max-width: 560px) {
           .facts-grid {
             grid-template-columns: 1fr !important;
+          }
+          .about-main-grid > div:first-child {
+            max-width: 100% !important;
           }
         }
       `}</style>
