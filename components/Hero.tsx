@@ -3,15 +3,14 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
-import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter, FaWhatsapp } from 'react-icons/fa';
 import { fadeUp, fadeIn, staggerContainer, staggerItem, viewport } from '@/lib/animations';
-import { FaX } from 'react-icons/fa6';
 
 const socialLinks = [
     { icon: FaGithub, href: 'https://github.com/Mushfiq599', label: 'GitHub' },
-    { icon: FaLinkedin, href: 'https://www.linkedin.com/in/mush-fiq', label: 'LinkedIn' },
-    { icon: FaX, href: 'https://x.com/MushFiq72288867', label: 'X' },
-    { icon: FaWhatsapp, href: 'https://wa.me/8801630935413', label: 'WhatsApp' },
+    { icon: FaLinkedin, href: 'https://linkedin.com/in/mushfiq', label: 'LinkedIn' },
+    { icon: FaTwitter, href: 'https://twitter.com/mushfiq', label: 'Twitter' },
+    { icon: FaWhatsapp, href: 'https://wa.me/8801XXXXXXXXX', label: 'WhatsApp' },
 ];
 
 const stats = [
@@ -22,39 +21,22 @@ const stats = [
 
 export default function Hero() {
     const glowRef = useRef<HTMLDivElement>(null);
-    const titleRef = useRef<HTMLHeadingElement>(null);
 
-    // GSAP floating glow orbs
     useEffect(() => {
         const ctx = gsap.context(() => {
             gsap.to('.glow-orb-1', {
-                x: 60,
-                y: -40,
-                duration: 6,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
+                x: 60, y: -40, duration: 6,
+                repeat: -1, yoyo: true, ease: 'sine.inOut',
             });
             gsap.to('.glow-orb-2', {
-                x: -50,
-                y: 50,
-                duration: 8,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-                delay: 1,
+                x: -50, y: 50, duration: 8,
+                repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1,
             });
             gsap.to('.glow-orb-3', {
-                x: 30,
-                y: 60,
-                duration: 7,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-                delay: 2,
+                x: 30, y: 60, duration: 7,
+                repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2,
             });
         });
-
         return () => ctx.revert();
     }, []);
 
@@ -74,52 +56,28 @@ export default function Hero() {
                 padding: '120px 24px 80px',
             }}
         >
-            {/* Background glow orbs (GSAP animated) */}
+            {/* Background */}
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-                <div
-                    className="glow-orb-1"
-                    style={{
-                        position: 'absolute',
-                        top: '15%',
-                        left: '10%',
-                        width: '500px',
-                        height: '500px',
-                        background: 'radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%)',
-                        borderRadius: '50%',
-                        filter: 'blur(40px)',
-                    }}
-                />
-                <div
-                    className="glow-orb-2"
-                    style={{
-                        position: 'absolute',
-                        top: '40%',
-                        right: '5%',
-                        width: '400px',
-                        height: '400px',
-                        background: 'radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 70%)',
-                        borderRadius: '50%',
-                        filter: 'blur(40px)',
-                    }}
-                />
-                <div
-                    className="glow-orb-3"
-                    style={{
-                        position: 'absolute',
-                        bottom: '10%',
-                        left: '40%',
-                        width: '350px',
-                        height: '350px',
-                        background: 'radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%)',
-                        borderRadius: '50%',
-                        filter: 'blur(40px)',
-                    }}
-                />
-
-                {/* Grid pattern */}
+                <div className="glow-orb-1" style={{
+                    position: 'absolute', top: '15%', left: '10%',
+                    width: '500px', height: '500px',
+                    background: 'radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%)',
+                    borderRadius: '50%', filter: 'blur(40px)',
+                }} />
+                <div className="glow-orb-2" style={{
+                    position: 'absolute', top: '40%', right: '5%',
+                    width: '400px', height: '400px',
+                    background: 'radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 70%)',
+                    borderRadius: '50%', filter: 'blur(40px)',
+                }} />
+                <div className="glow-orb-3" style={{
+                    position: 'absolute', bottom: '10%', left: '40%',
+                    width: '350px', height: '350px',
+                    background: 'radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%)',
+                    borderRadius: '50%', filter: 'blur(40px)',
+                }} />
                 <div style={{
-                    position: 'absolute',
-                    inset: 0,
+                    position: 'absolute', inset: 0,
                     backgroundImage: `
             linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
             linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px)
@@ -129,17 +87,18 @@ export default function Hero() {
             </div>
 
             {/* Main content */}
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                width: '100%',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '60px',
-                alignItems: 'center',
-                position: 'relative',
-                zIndex: 1,
-            }}
+            <div
+                style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    width: '100%',
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '60px',
+                    alignItems: 'center',
+                    position: 'relative',
+                    zIndex: 1,
+                }}
                 className="hero-grid"
             >
                 {/* Left — Text */}
@@ -153,8 +112,7 @@ export default function Hero() {
                         <span className="section-tag">
                             <span style={{
                                 width: '6px', height: '6px',
-                                borderRadius: '50%',
-                                background: '#22c55e',
+                                borderRadius: '50%', background: '#22c55e',
                                 display: 'inline-block',
                                 animation: 'pulse 2s infinite',
                             }} />
@@ -164,11 +122,10 @@ export default function Hero() {
 
                     {/* Headline */}
                     <motion.h1
-                        ref={titleRef}
                         variants={staggerItem}
                         style={{
                             fontFamily: 'var(--font-space)',
-                            fontSize: 'clamp(2.6rem, 6vw, 4.2rem)',
+                            fontSize: 'clamp(2.4rem, 6vw, 4.2rem)',
                             fontWeight: 700,
                             lineHeight: 1.1,
                             letterSpacing: '-0.03em',
@@ -183,7 +140,7 @@ export default function Hero() {
                     <motion.h2
                         variants={staggerItem}
                         style={{
-                            fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
+                            fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
                             fontWeight: 400,
                             color: 'var(--text-muted)',
                             marginBottom: '20px',
@@ -213,7 +170,13 @@ export default function Hero() {
                     {/* CTA Buttons */}
                     <motion.div
                         variants={staggerItem}
-                        style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '40px' }}
+                        style={{
+                            display: 'flex',
+                            gap: '12px',
+                            flexWrap: 'wrap',
+                            marginBottom: '32px',
+                        }}
+                        className="hero-cta-row"
                     >
                         <motion.button
                             onClick={() => scrollTo('projects')}
@@ -261,7 +224,13 @@ export default function Hero() {
                     {/* Social Icons */}
                     <motion.div
                         variants={staggerItem}
-                        style={{ display: 'flex', gap: '12px', marginBottom: '48px' }}
+                        style={{
+                            display: 'flex',
+                            gap: '12px',
+                            marginBottom: '48px',
+                            flexWrap: 'wrap',
+                        }}
+                        className="hero-social-row"
                     >
                         {socialLinks.map(({ icon: Icon, href, label }) => (
                             <motion.a
@@ -302,9 +271,10 @@ export default function Hero() {
                         variants={staggerItem}
                         style={{
                             display: 'flex',
-                            gap: '24px',
+                            gap: '16px',
                             flexWrap: 'wrap',
                         }}
+                        className="hero-stats-row"
                     >
                         {stats.map(({ number, label }) => (
                             <div
@@ -316,6 +286,7 @@ export default function Hero() {
                                     borderRadius: '12px',
                                     minWidth: '80px',
                                     textAlign: 'center',
+                                    backdropFilter: 'blur(8px)',
                                 }}
                             >
                                 <div style={{
@@ -328,7 +299,7 @@ export default function Hero() {
                                     {number}
                                 </div>
                                 <div style={{
-                                    fontSize: '0.75rem',
+                                    fontSize: '0.72rem',
                                     color: 'var(--text-muted)',
                                     marginTop: '4px',
                                     whiteSpace: 'nowrap',
@@ -352,32 +323,28 @@ export default function Hero() {
                         transition={{ type: 'spring', stiffness: 200 }}
                         style={{ position: 'relative' }}
                     >
-                        {/* Glow ring behind photo */}
+                        {/* Gradient border ring */}
                         <div style={{
-                            position: 'absolute',
-                            inset: '-3px',
+                            position: 'absolute', inset: '-3px',
                             borderRadius: '24px',
                             background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-cyan))',
-                            zIndex: 0,
-                            filter: 'blur(1px)',
+                            zIndex: 0, filter: 'blur(1px)',
                         }} />
 
                         {/* Photo */}
                         <div style={{
-                            position: 'relative',
-                            zIndex: 1,
-                            width: 'clamp(280px, 35vw, 420px)',
+                            position: 'relative', zIndex: 1,
+                            width: 'clamp(260px, 35vw, 420px)',
                             aspectRatio: '4/5',
                             borderRadius: '22px',
                             overflow: 'hidden',
                             background: 'var(--bg-secondary)',
                         }}>
                             <img
-                                src="/images/hero.jpeg"
+                                src="/images/hero-photo.jpeg"
                                 alt="Mushfiq — Full Stack Developer"
                                 style={{
-                                    width: '100%',
-                                    height: '100%',
+                                    width: '100%', height: '100%',
                                     objectFit: 'cover',
                                     objectPosition: 'top center',
                                 }}
@@ -389,19 +356,15 @@ export default function Hero() {
                             animate={{ y: [0, -8, 0] }}
                             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                             style={{
-                                position: 'absolute',
-                                top: '-16px',
-                                right: '-20px',
+                                position: 'absolute', top: '-16px', right: '-20px',
                                 background: 'var(--bg-card)',
                                 border: '1px solid var(--border)',
                                 borderRadius: '12px',
                                 padding: '10px 16px',
-                                fontSize: '0.8rem',
-                                fontWeight: 600,
+                                fontSize: '0.8rem', fontWeight: 600,
                                 color: 'var(--accent-cyan)',
                                 backdropFilter: 'blur(12px)',
-                                whiteSpace: 'nowrap',
-                                zIndex: 2,
+                                whiteSpace: 'nowrap', zIndex: 2,
                             }}
                         >
                             ⚡ Open to opportunities
@@ -412,19 +375,15 @@ export default function Hero() {
                             animate={{ y: [0, 8, 0] }}
                             transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                             style={{
-                                position: 'absolute',
-                                bottom: '-16px',
-                                left: '-20px',
+                                position: 'absolute', bottom: '-16px', left: '-20px',
                                 background: 'var(--bg-card)',
                                 border: '1px solid var(--border)',
                                 borderRadius: '12px',
                                 padding: '10px 16px',
-                                fontSize: '0.8rem',
-                                fontWeight: 600,
+                                fontSize: '0.8rem', fontWeight: 600,
                                 color: 'var(--accent-purple-light)',
                                 backdropFilter: 'blur(12px)',
-                                whiteSpace: 'nowrap',
-                                zIndex: 2,
+                                whiteSpace: 'nowrap', zIndex: 2,
                             }}
                         >
                             🚀 MERN Stack Dev
@@ -440,16 +399,11 @@ export default function Hero() {
                 animate="visible"
                 transition={{ delay: 1.5 }}
                 style={{
-                    position: 'absolute',
-                    bottom: '32px',
-                    left: '50%',
+                    position: 'absolute', bottom: '32px', left: '50%',
                     transform: 'translateX(-50%)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '8px',
-                    color: 'var(--text-muted)',
-                    fontSize: '0.75rem',
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: '8px',
+                    color: 'var(--text-muted)', fontSize: '0.75rem',
                     letterSpacing: '0.1em',
                 }}
             >
@@ -458,33 +412,48 @@ export default function Hero() {
                     animate={{ y: [0, 8, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                     style={{
-                        width: '1px',
-                        height: '40px',
+                        width: '1px', height: '40px',
                         background: 'linear-gradient(to bottom, var(--accent-purple), transparent)',
                     }}
                 />
             </motion.div>
 
-            {/* Pulse animation for green dot */}
             <style>{`
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  @media (max-width: 768px) {
-    .hero-grid {
-      grid-template-columns: 1fr !important;
-      text-align: center;
-    }
-    .hero-grid > div:last-child {
-      order: -1;
-    }
-    /* Center the stats row on mobile */
-    .hero-grid > div:first-child > div:last-child {
-      justify-content: center;
-    }
-  }
-`}</style>
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+
+        @media (max-width: 768px) {
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            text-align: center;
+            gap: 40px !important;
+          }
+          .hero-grid > div:last-child {
+            order: -1;
+          }
+          .hero-cta-row {
+            justify-content: center;
+          }
+          .hero-social-row {
+            justify-content: center;
+          }
+          .hero-stats-row {
+            justify-content: center;
+          }
+          .hero-grid > div:first-child p {
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-grid > div:last-child > div > div:nth-child(2) {
+            width: clamp(220px, 80vw, 300px) !important;
+          }
+        }
+      `}</style>
         </section>
     );
 }
