@@ -2,15 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { navbarVariants, fadeIn } from '@/lib/animations';
+import { navbarVariants } from '@/lib/animations';
 import LogoMark from '@/components/ui/LogoMark';
 
-const navItems = [
+const desktopNavItems = [
     { label: 'About', href: 'about' },
     { label: 'Skills', href: 'skills' },
     { label: 'Education', href: 'education' },
     { label: 'Experience', href: 'experience' },
     { label: 'Certificate', href: 'certificates' },
+    { label: 'Projects', href: 'projects' },
+    { label: 'GitHub', href: 'github' },
+    { label: 'Contact', href: 'contact' },
+];
+
+const mobileNavItems = [
+    { label: 'About', href: 'about' },
+    { label: 'Skills', href: 'skills' },
     { label: 'Projects', href: 'projects' },
     { label: 'GitHub', href: 'github' },
     { label: 'Contact', href: 'contact' },
@@ -27,7 +35,7 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Highlight active nav link based on scroll position
+    // Highlight active nav link
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -38,7 +46,7 @@ export default function Navbar() {
             { rootMargin: '-40% 0px -55% 0px' }
         );
 
-        navItems.forEach(({ href }) => {
+        desktopNavItems.forEach(({ href }) => {
             const el = document.getElementById(href);
             if (el) observer.observe(el);
         });
@@ -46,9 +54,26 @@ export default function Navbar() {
         return () => observer.disconnect();
     }, []);
 
+    // Close menu on resize to desktop
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 768) setMenuOpen(false);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Lock scroll when mobile menu open
+    useEffect(() => {
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [menuOpen]);
+
     const scrollTo = (id: string) => {
         setMenuOpen(false);
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
     };
 
     return (
@@ -58,9 +83,7 @@ export default function Navbar() {
             animate="visible"
             style={{
                 position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
+                top: 0, left: 0, right: 0,
                 zIndex: 100,
                 padding: scrolled ? '12px 0' : '20px 0',
                 background: scrolled
@@ -92,24 +115,27 @@ export default function Navbar() {
                         background: 'none',
                         border: 'none',
                         padding: 0,
-                        cursor: 'none',
-                        display: 'inline-flex',
+                        display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'flex-start',
                     }}
                 >
                     <LogoMark size="navbar" />
                 </motion.button>
+
                 {/* Desktop Nav */}
-                <ul style={{
-                    display: 'flex',
-                    gap: '8px',
-                    listStyle: 'none',
-                    alignItems: 'center',
-                }}
+                <ul
+                    style={{
+                        display: 'flex',
+                        gap: '4px',
+                        listStyle: 'none',
+                        alignItems: 'center',
+                        margin: 0,
+                        padding: 0,
+                    }}
                     className="desktop-nav"
                 >
-                    {navItems.map((item) => (
+                    {desktopNavItems.map((item) => (
                         <li key={item.href}>
                             <motion.button
                                 onClick={() => scrollTo(item.href)}
@@ -117,19 +143,20 @@ export default function Navbar() {
                                 whileTap={{ scale: 0.95 }}
                                 style={{
                                     background: activeSection === item.href
-                                        ? 'rgba(124, 58, 237, 0.12)'
+                                        ? 'rgba(124,58,237,0.12)'
                                         : 'none',
                                     border: activeSection === item.href
-                                        ? '1px solid rgba(124, 58, 237, 0.25)'
+                                        ? '1px solid rgba(124,58,237,0.25)'
                                         : '1px solid transparent',
                                     borderRadius: '8px',
-                                    padding: '7px 16px',
-                                    fontSize: '0.875rem',
+                                    padding: '7px 14px',
+                                    fontSize: '0.82rem',
                                     fontWeight: 500,
                                     color: activeSection === item.href
                                         ? 'var(--accent-purple-light)'
                                         : 'var(--text-muted)',
                                     transition: 'all 0.2s ease',
+                                    whiteSpace: 'nowrap',
                                 }}
                             >
                                 {item.label}
@@ -138,12 +165,12 @@ export default function Navbar() {
                     ))}
 
                     {/* Resume button */}
-                    <li>
+                    <li style={{ marginLeft: '8px' }}>
                         <motion.a
                             href="/resume.pdf"
                             target="_blank"
                             rel="noreferrer"
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(124,58,237,0.4)' }}
                             whileTap={{ scale: 0.95 }}
                             style={{
                                 display: 'inline-flex',
@@ -153,10 +180,9 @@ export default function Navbar() {
                                 background: 'var(--accent-purple)',
                                 color: '#fff',
                                 borderRadius: '8px',
-                                fontSize: '0.875rem',
+                                fontSize: '0.82rem',
                                 fontWeight: 600,
                                 textDecoration: 'none',
-                                marginLeft: '8px',
                             }}
                         >
                             Resume ↗
@@ -176,6 +202,7 @@ export default function Navbar() {
                         background: 'none',
                         border: 'none',
                         padding: '4px',
+                        zIndex: 110,
                     }}
                 >
                     {[0, 1, 2].map((i) => (
@@ -186,6 +213,7 @@ export default function Navbar() {
                                 y: menuOpen && i === 0 ? 8 : menuOpen && i === 2 ? -8 : 0,
                                 opacity: menuOpen && i === 1 ? 0 : 1,
                             }}
+                            transition={{ duration: 0.25 }}
                             style={{
                                 display: 'block',
                                 width: '24px',
@@ -202,81 +230,182 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <AnimatePresence>
                 {menuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        style={{
-                            overflow: 'hidden',
-                            background: 'rgba(10, 10, 15, 0.97)',
-                            borderTop: '1px solid var(--border)',
-                        }}
-                    >
-                        <ul style={{
-                            listStyle: 'none',
-                            padding: '16px 24px 24px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px',
-                        }}>
-                            {navItems.map((item, i) => (
-                                <motion.li
-                                    key={item.href}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.06 }}
-                                >
-                                    <button
-                                        onClick={() => scrollTo(item.href)}
-                                        style={{
-                                            width: '100%',
-                                            textAlign: 'left',
-                                            background: 'none',
-                                            border: 'none',
-                                            padding: '12px 0',
-                                            fontSize: '1.1rem',
-                                            fontWeight: 500,
-                                            color: activeSection === item.href
-                                                ? 'var(--accent-purple-light)'
-                                                : 'var(--text-muted)',
-                                            borderBottom: '1px solid var(--border)',
-                                        }}
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setMenuOpen(false)}
+                            style={{
+                                position: 'fixed',
+                                inset: 0,
+                                background: 'rgba(0,0,0,0.6)',
+                                backdropFilter: 'blur(4px)',
+                                zIndex: 98,
+                            }}
+                        />
+
+                        {/* Drawer */}
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            style={{
+                                position: 'fixed',
+                                top: 0, right: 0, bottom: 0,
+                                width: 'min(300px, 80vw)',
+                                background: 'rgba(16,16,28,0.98)',
+                                backdropFilter: 'blur(20px)',
+                                borderLeft: '1px solid var(--border)',
+                                zIndex: 99,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                padding: '80px 24px 32px',
+                                overflowY: 'auto',
+                            }}
+                        >
+                            {/* Nav links */}
+                            <ul style={{
+                                listStyle: 'none',
+                                margin: 0, padding: 0,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                                flex: 1,
+                            }}>
+                                {mobileNavItems.map((item, i) => (
+                                    <motion.li
+                                        key={item.href}
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: i * 0.06, duration: 0.3 }}
                                     >
-                                        {item.label}
-                                    </button>
-                                </motion.li>
-                            ))}
-                            <motion.li
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.4 }}
-                                style={{ marginTop: '12px' }}
+                                        <button
+                                            onClick={() => scrollTo(item.href)}
+                                            style={{
+                                                width: '100%',
+                                                textAlign: 'left',
+                                                background: activeSection === item.href
+                                                    ? 'rgba(124,58,237,0.1)'
+                                                    : 'none',
+                                                border: 'none',
+                                                borderRadius: '10px',
+                                                padding: '14px 16px',
+                                                fontSize: '1rem',
+                                                fontWeight: activeSection === item.href ? 700 : 500,
+                                                color: activeSection === item.href
+                                                    ? 'var(--accent-purple-light)'
+                                                    : 'var(--text-muted)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                transition: 'all 0.2s',
+                                            }}
+                                        >
+                                            {item.label}
+                                            {activeSection === item.href && (
+                                                <span style={{
+                                                    width: '6px', height: '6px',
+                                                    borderRadius: '50%',
+                                                    background: 'var(--accent-purple)',
+                                                }} />
+                                            )}
+                                        </button>
+                                    </motion.li>
+                                ))}
+                            </ul>
+
+                            {/* Divider */}
+                            <div style={{
+                                height: '1px',
+                                background: 'var(--border)',
+                                margin: '20px 0',
+                            }} />
+
+                            {/* Resume + social */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.35 }}
+                                style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
                             >
-                                <a href="/resume.pdf" target="_blank" rel="noreferrer"
+                                <a
+                                    href="/resume.pdf"
+                                    target="_blank"
+                                    rel="noreferrer"
                                     style={{
-                                        display: 'block',
-                                        textAlign: 'center',
-                                        padding: '12px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '6px',
+                                        padding: '13px',
                                         background: 'var(--accent-purple)',
                                         color: '#fff',
-                                        borderRadius: '8px',
+                                        borderRadius: '10px',
                                         fontWeight: 600,
+                                        fontSize: '0.9rem',
                                         textDecoration: 'none',
                                     }}
                                 >
                                     View Resume ↗
                                 </a>
-                            </motion.li>
-                        </ul>
-                    </motion.div>
+
+                                {/* Quick links */}
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '8px',
+                                }}>
+                                    {[
+                                        { label: 'Education', href: 'education' },
+                                        { label: 'Experience', href: 'experience' },
+                                        { label: 'Certificate', href: 'certificates' },
+                                        { label: 'All Sections', href: 'about' },
+                                    ].map(({ label, href }) => (
+                                        <button
+                                            key={href}
+                                            onClick={() => scrollTo(href)}
+                                            style={{
+                                                padding: '10px 8px',
+                                                background: 'var(--glass)',
+                                                border: '1px solid var(--border)',
+                                                borderRadius: '8px',
+                                                color: 'var(--text-muted)',
+                                                fontSize: '0.75rem',
+                                                fontWeight: 500,
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            {/* Copyright */}
+                            <div style={{
+                                marginTop: '24px',
+                                fontSize: '0.7rem',
+                                color: 'var(--text-muted)',
+                                textAlign: 'center',
+                                opacity: 0.6,
+                            }}>
+                                © {new Date().getFullYear()} Mushfiq
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
 
-            {/* Responsive styles */}
             <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
           .desktop-nav { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
+        }
+        @media (min-width: 901px) {
+          .mobile-menu-btn { display: none !important; }
         }
       `}</style>
         </motion.nav >

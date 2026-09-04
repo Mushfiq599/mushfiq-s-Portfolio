@@ -38,9 +38,9 @@ const highlights = [
 
 const facts = [
     { label: 'Based in', value: 'Chattogram, Bangladesh' },
-    { label: 'Education', value: 'BSc in CSE — UITS' },
+    { label: 'Education', value: 'BSc in CSE — BGCTUB' },
     { label: 'Focus', value: 'Full Stack Web Dev' },
-    { label: 'Hobbies', value: 'Coding, Gaming, Chess' },
+    { label: 'Hobbies', value: 'Coding, Exploring, Chess' },
     { label: 'Languages', value: 'Bengali, English' },
     { label: 'Status', value: '🟢 Open to work' },
 ];
@@ -398,7 +398,7 @@ export default function About() {
                             }}>
                                 Today I build across the full stack — crafting React and Next.js frontends
                                 that feel alive, backed by Node.js APIs and MongoDB databases that scale.
-                                I'm a CSE student at UITS by day, and a relentless builder by night.
+                                I'm a graduate CSE student, and a relentless builder by night.
                                 Most of what I know came from shipping real things,{' '}
                                 <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
                                     watching them break,
