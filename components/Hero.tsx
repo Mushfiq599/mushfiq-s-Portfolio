@@ -10,7 +10,7 @@ const socialLinks = [
     { icon: FaGithub, href: 'https://github.com/Mushfiq599', label: 'GitHub' },
     { icon: FaLinkedin, href: 'https://linkedin.com/in/mushfiq', label: 'LinkedIn' },
     { icon: FaTwitter, href: 'https://twitter.com/mushfiq', label: 'Twitter' },
-    { icon: FaWhatsapp, href: 'https://wa.me/8801XXXXXXXXX', label: 'WhatsApp' },
+    { icon: FaWhatsapp, href: 'https://wa.me/8801630935413', label: 'WhatsApp' },
 ];
 
 const stats = [
