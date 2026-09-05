@@ -53,7 +53,7 @@ export const metadata: Metadata = {
       'Full Stack Developer from Bangladesh — building fast, beautiful, and scalable web applications with the MERN stack.',
     images: [
       {
-        url: '/og-image.png',
+        url: 'https://mushfiq-s-portfolio.vercel.app/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'Mushfiq — Full Stack Developer',
@@ -65,8 +65,8 @@ export const metadata: Metadata = {
     title: 'Mushfiq | Full Stack Developer',
     description:
       'Full Stack Developer from Bangladesh — building fast, beautiful, and scalable web applications with the MERN stack.',
-    images: ['/og-image.png'],
-    creator: '@mushfiq',
+    images: ['https://mushfiq-s-portfolio.vercel.app/opengraph-image'],
+    creator: '@MushFiq72288867',
   },
   alternates: {
     canonical: 'https://mushfiq-s-portfolio.vercel.app',
