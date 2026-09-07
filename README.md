@@ -1,210 +1,234 @@
-# 🚀 Mushfiq's Portfolio — Next.js 15
+<div align="center">
 
-A modern, highly animated personal portfolio website built with **Next.js 15 App Router**, featuring premium animations with **Framer Motion** and **GSAP**, buttery smooth scrolling via **Lenis**, live GitHub activity, and a dark glassmorphism design system.
+![Portfolio Banner](https://capsule-render.vercel.app/api?type=waving&color=0:000000,50:0d0d0d,100:1a1a1a&height=200&section=header&text=Mushfiq's%20Portfolio&fontSize=48&fontColor=ffffff&fontAlignY=38&desc=Full-Stack%20Developer%20Portfolio%20—%20MERN%20Stack&descAlignY=58&descSize=18&descColor=22d3ee&animation=fadeIn)
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-7C3AED?style=for-the-badge&logo=vercel)](https://mushfiq-s-portfolio.vercel.app/)
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-06B6D4?style=for-the-badge&logo=github)](https://github.com/Mushfiq599/mushfiq-s-Portfolio)
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+</div>
+
+<div align="center">
+
+[![Live Site](https://img.shields.io/badge/🌐_Live_Site-22d3ee?style=for-the-badge&logoColor=black)](https://mushfiq-s-portfolio.vercel.app)
+[![Repo](https://img.shields.io/badge/GitHub_Repo-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Mushfiq599/mushfiq-s-portfolio)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com)
+
+</div>
 
 ---
 
-## ✨ Features
+## 📌 Project Overview
 
-- **Premium Animations** — GSAP scroll-triggered animations, 3D card tilt, parallax image scroll, word-by-word heading stagger, elastic spring effects
-- **Framer Motion** — Page transitions, hover effects, stagger containers, AnimatePresence modals
-- **Lenis Smooth Scroll** — Buttery smooth scrolling synced with GSAP ScrollTrigger
-- **Custom Cursor** — Trailing ring with magnetic expand on interactive elements
-- **Loading Screen** — Animated progress bar with ghost background headline
-- **GitHub Activity** — Live profile card, contribution heatmap (52 weeks), streak stats, recent repos
-- **Project Modal** — Rich detail view with tech stack, challenges, and future roadmap
-- **Glassmorphism Navbar** — Sticky with active section highlighting and mobile hamburger
-- **Fully Responsive** — Mobile-first, works on all screen sizes
-- **Dark Theme** — Deep-space palette with purple/cyan accent system
+This is my **personal developer portfolio** — a production-grade, fully animated showcase of my skills, projects, experience, and certificates as a Full-Stack Web Developer from Bangladesh.
+
+Built with **Next.js App Router** and **TypeScript**, the site features **GSAP** and **Framer Motion** animations, a live GitHub stats integration, a working contact form, downloadable resume, and a certificates section with verified credentials. Every section was designed from scratch with a dark minimalist aesthetic optimized for both performance and visual impact.
+
+🌐 **Live:** [mushfiq-s-portfolio.vercel.app](https://mushfiq-s-portfolio.vercel.app)
+
+---
+
+## 🖼️ Screenshots
+
+> **Hero Section**
+![Hero](./screenshots/hero.png)
+
+> **About & Skills**
+![About](./screenshots/about.png)
+
+> **Projects Section**
+![Projects](./screenshots/projects.png)
+
+> **Certificates Section**
+![Certificates](./screenshots/certificates.png)
+
+> **Contact Section**
+![Contact](./screenshots/contact.png)
+
+---
+
+## ✨ Main Features
+
+### 🎨 Design & Animations
+- ⚡ **GSAP animations** — smooth entrance animations, scroll-triggered effects
+- 🎬 **Framer Motion** — page transitions, hover effects, staggered reveals
+- 🖱️ **Lenis smooth scrolling** — buttery smooth scroll experience
+- 🌑 **Dark minimalist design** — clean black/dark aesthetic with cyan accent
+- 📱 **Fully responsive** — pixel-perfect across mobile, tablet, and desktop
+
+### 📄 Sections
+- 👋 **Hero** — name, title, availability status, social links, animated intro
+- 🧑 **About** — personal story, values, education summary, hobbies
+- 🛠️ **Skills** — categorized tech stack — Frontend, Backend, Tools & DevOps
+- 🎓 **Education** — full academic background with institution details
+- 💼 **Experience** — project-based and open source work history
+- 🏆 **Certificates** — verified certificates with credential IDs (Programming Hero, Grameenphone Academy)
+- 🚀 **Projects** — showcase of 4 featured projects with links and tech tags
+- 📊 **GitHub** — live language breakdown and contribution activity
+- 📬 **Contact** — working contact form, email, phone, WhatsApp
+
+### ⚙️ Technical Highlights
+- 🔍 **Full SEO** — meta tags, Open Graph image, Twitter Card, robots, sitemap
+- 📄 **Downloadable resume** — live PDF served from the `/public` folder
+- 📊 **Live GitHub stats** — real-time language breakdown and contribution graph
+- 💬 **WhatsApp integration** — direct message button linked to phone number
+- 🐳 **Docker-ready** — containerized for consistent deployment
+- ⚡ **Performance optimized** — Next.js image optimization, code splitting
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
+| Technology | Purpose |
 |---|---|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| Animations | Framer Motion + GSAP + Lenis |
-| Auth (projects) | Firebase Auth |
-| Icons | React Icons |
-| Fonts | Inter + Space Grotesk (Google Fonts) |
-| Deployment | Vercel |
+| Next.js 14+ (App Router) | Framework, SSR, routing, API routes |
+| TypeScript | Type-safe codebase |
+| Tailwind CSS | Styling and dark theme design |
+| GSAP | Scroll-triggered and entrance animations |
+| Framer Motion | Component animations and page transitions |
+| Lenis | Smooth scrolling library |
+| Vercel | Deployment and hosting |
+| Docker | Containerization |
+| Figma | UI design and prototyping |
 
 ---
 
-## 📁 Project Structure
-
-```
-mushfiq-portfolio/
-├── app/
-│   ├── layout.tsx              # Root layout — fonts, metadata, Lenis
-│   ├── page.tsx                # Home page — assembles all sections
-│   ├── globals.css             # Design tokens + base styles
-│   └── api/
-│       └── github/
-│           ├── user/route.ts
-│           ├── repos/route.ts
-│           └── contributions/route.ts
-│
-├── components/
-│   ├── Navbar.tsx              # Sticky glassmorphism navbar
-│   ├── Hero.tsx                # Hero with GSAP orbs + resume download
-│   ├── About.tsx               # About with quick facts grid
-│   ├── Skills.tsx              # Animated skill bars + ticker
-│   ├── Education.tsx           # Timeline layout
-│   ├── Experience.tsx          # Experience cards
-│   ├── Projects.tsx            # GSAP-animated project cards
-│   ├── GitHub.tsx              # Live GitHub activity + heatmap
-│   ├── Contact.tsx             # Contact form + direct details
-│   ├── Footer.tsx              # Footer with social links
-│   └── ui/
-│       ├── LoadingScreen.tsx   # Animated loading screen
-│       ├── ProjectModal.tsx    # Project detail modal
-│       ├── SmoothScroll.tsx    # Lenis wrapper
-│       └── CustomCursor.tsx    # Magnetic custom cursor
-│
-├── lib/
-│   └── animations.ts           # Reusable Framer Motion variants
-│
-├── types/
-│   └── index.ts                # Shared TypeScript types
-│
-└── public/
-    ├── resume.pdf              # Resume
-    └── images/
-        └── hero-photo.jpeg     # Profile photo
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Mushfiq599/mushfiq-portfolio.git
-cd mushfiq-portfolio
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## ⚙️ Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```env
-# Optional — increases GitHub API rate limit from 60 to 5000 requests/hour
-GITHUB_TOKEN=your_github_personal_access_token_here
-```
-
-### How to get a GitHub token
-
-1. Go to **github.com → Settings → Developer settings**
-2. Click **Personal access tokens → Fine-grained tokens**
-3. Click **Generate new token**
-4. Set expiration and select **Public Repositories (read-only)**
-5. Copy the token into `.env.local`
-
-> Without the token the GitHub section still works — it just uses the 60 requests/hour public limit.
-
----
-
-## 🎨 Design System
-
-### Color Palette
-
-```css
---bg-primary:          #0A0A0F   /* Near-black background */
---bg-secondary:        #111118   /* Section alternating bg */
---bg-card:             #16161f   /* Card backgrounds */
---accent-purple:       #7C3AED   /* Primary accent */
---accent-purple-light: #9F6EFF   /* Hover/highlight purple */
---accent-cyan:         #06B6D4   /* Secondary accent */
---accent-magenta:      #EC4899   /* Tertiary accent */
---text-primary:        #F8FAFC   /* Main text */
---text-muted:          #94A3B8   /* Secondary text */
-```
-
-### Fonts
-
-- **Inter** — Body text, UI elements
-- **Space Grotesk** — Headings, logo, numbers
-
----
-
-## 📦 Key Dependencies
+## 📦 Dependencies
 
 ```json
 {
-  "framer-motion": "^11.x",
-  "gsap": "^3.x",
-  "@gsap/react": "^2.x",
-  "lenis": "^1.x",
-  "react-icons": "^5.x"
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5",
+    "framer-motion": "^11.2.0",
+    "gsap": "^3.12.5",
+    "@studio-freight/lenis": "^1.0.42",
+    "tailwindcss": "^3.4.4",
+    "react-icons": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0"
+  }
 }
 ```
 
 ---
 
-## 🔧 Customization
+## ⚙️ Local Setup Guide
 
-### Updating your information
+### Prerequisites
+- Node.js v18+ installed
+- Git installed
 
-| File | What to update |
+---
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Mushfiq599/mushfiq-s-portfolio.git
+cd mushfiq-s-portfolio
+```
+
+---
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 3. Set up environment variables
+
+Create a `.env.local` file in the project root:
+
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# If using a contact form email service (e.g. Resend, EmailJS)
+RESEND_API_KEY=your_resend_api_key
+```
+
+> ⚠️ If no email service is configured, the contact form works in UI-only mode.
+
+---
+
+### 4. Add your resume
+
+Place your resume PDF at:
+
+```
+public/resume.pdf
+```
+
+It will be served at `/resume.pdf` and linked from the site automatically.
+
+---
+
+### 5. Run the development server
+
+```bash
+npm run dev
+```
+
+App will run at: `http://localhost:3000`
+
+---
+
+### 6. Docker setup (optional)
+
+```bash
+# Build the Docker image
+docker build -t mushfiq-portfolio .
+
+# Run the container
+docker run -p 3000:3000 mushfiq-portfolio
+```
+
+---
+
+## 🗂️ Project Structure
+
+```
+mushfiq-s-portfolio/
+├── app/                    # Next.js App Router
+│   ├── page.tsx            # Main portfolio page
+│   ├── layout.tsx          # Root layout with metadata
+│   └── api/                # API routes (contact form)
+├── components/             # Section components
+│   ├── Hero.tsx
+│   ├── About.tsx
+│   ├── Skills.tsx
+│   ├── Projects.tsx
+│   ├── Certificates.tsx
+│   └── Contact.tsx
+├── public/                 # Static assets
+│   ├── resume.pdf          # Downloadable resume
+│   └── images/             # Project screenshots
+├── lib/                    # Utility functions
+└── types/                  # TypeScript types
+```
+
+---
+
+## 🌐 Live Link & Relevant Links
+
+| Resource | Link |
 |---|---|
-| `components/Hero.tsx` | Name, title, social links, stats, photo |
-| `components/About.tsx` | Bio paragraphs, quick facts, current project |
-| `components/Education.tsx` | Degrees, institutions, GPA, years |
-| `components/Experience.tsx` | Job titles, companies, bullet points |
-| `components/Projects.tsx` | Project data, GitHub/live links, images |
-| `components/Contact.tsx` | Email, phone, WhatsApp, social links |
-| `components/GitHub.tsx` | Line 3 — `GITHUB_USERNAME` constant |
-| `app/layout.tsx` | Site title, meta description, keywords |
-| `public/resume.pdf` | Your resume PDF |
-| `public/images/hero-photo.jpeg` | Your profile photo |
-
-### Changing the color palette
-
-All colors are CSS custom properties in `app/globals.css`. Update the `:root` block to switch themes globally — every component inherits from these variables.
+| 🌐 Live Portfolio | [mushfiq-s-portfolio.vercel.app](https://mushfiq-s-portfolio.vercel.app) |
+| 💻 GitHub Profile | [github.com/Mushfiq599](https://github.com/Mushfiq599) |
+| 💼 LinkedIn | [linkedin.com/in/mush-fiq](https://linkedin.com/in/mush-fiq) |
+| 🐦 Twitter/X | [x.com/MushFiq72288867](https://x.com/MushFiq72288867) |
+| 📧 Email | [mellowm678@gmail.com](mailto:mellowm678@gmail.com) |
+| 💬 WhatsApp | [wa.me/8801630935413](https://wa.me/8801630935413) |
 
 ---
 
-## 🚢 Deployment
+<div align="center">
 
-See the deployment section below for step-by-step Vercel instructions.
+![Footer](https://capsule-render.vercel.app/api?type=waving&color=0:000000,50:0d0d0d,100:1a1a1a&height=100&section=footer)
 
----
-
-## 📄 License
-
-MIT License — feel free to use this as a template for your own portfolio.
-
----
-
-## 🙏 Acknowledgements
-
-- [GSAP](https://gsap.com) — Animation library
-- [Framer Motion](https://www.framer.com/motion/) — React animation library
-- [Lenis](https://lenis.darkroom.engineering/) — Smooth scroll
-- [React Icons](https://react-icons.github.io/react-icons/) — Icon library
-- [Vercel](https://vercel.com) — Deployment platform
+</div>
